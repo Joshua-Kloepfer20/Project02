@@ -46,23 +46,47 @@ int server_handshake() {
 
 int main() {
 
-    int fd = open("./", O_CREAT | O_RDWR, 0644);
-
     int sd = server_handshake();
+    int fd = open("./USERS", O_CREAT | O_RDWR, 0644);
+    if (fd == -1) {
+      printf("error opening file\n");
+    }
+    struct user cuser;
     char input[1000];
-    char username[50];
-    char password[50];
     char logoreg[9];
-    read(fd, logoreg, 9);
+    int loginc = 0;
+    read(sd, logoreg, 9);
     if (strcmp(logoreg, "login") == 0) {
-
+      while (!loginc) {
+        struct user login;
+        read(sd, &login, sizeof(struct user));
+        login.username[strlen(login.username) - 1] = '\0';
+        login.password[strlen(login.password) - 1] = '\0';
+        printf("username: %s\npassword: %s\nrating: %d\n", login.username, login.password, login.rating);
+        while (read(fd, &cuser, sizeof(struct user))) {
+          printf("username: %s\npassword: %s\nrating: %d\n", cuser.username, cuser.password, cuser.rating);
+          if (strcmp(cuser.username, login.username) == 0 && strcmp(cuser.password, login.password) == 0) {
+            printf("we break\n");
+            break;
+          }
+        }
+        if (strcmp(cuser.username, login.username) == 0 && strcmp(cuser.password, login.password) == 0) {
+          printf("user has logged in\n");
+          loginc = 1;
+          write(sd, &loginc, 4);
+        }
+        else {
+          printf("wrong info\n");
+          write(sd, &loginc, 4);
+        }
+      }
     }
     else if(strcmp(logoreg, "register") == 0) {
         lseek(fd, 0, SEEK_END);
-        struct user cuser;
-        read(sd, &(cuser.username), 50);
-        read(sd, &(cuser.username), 50);
-        cuser.rating = 0;
+        read(sd, &cuser, sizeof(struct user));
+        cuser.username[strlen(cuser.username) - 1] = '\0';
+        cuser.password[strlen(cuser.password) - 1] = '\0';
+        printf("username: %s\npassword: %s\nrating: %d\n", cuser.username, cuser.password, cuser.rating);
         write(fd, &cuser, sizeof(struct user));
     }
 
@@ -71,6 +95,6 @@ int main() {
     //while(read(sd, input, 1000)) {
 
     //}
-
+    printf("client had dc\n");
     return 0;
 }

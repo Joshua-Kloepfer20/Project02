@@ -9,6 +9,8 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
+struct user {char username[50]; char password[50]; int rating;};
+
 int client_handshake() {
   struct addrinfo * hints;
   struct addrinfo * results;
@@ -26,30 +28,31 @@ int client_handshake() {
 int main() {
 
     int sd = client_handshake();
+    struct user cuser;
     char ucommand[500];
+    int loginc = 0;
     printf("login or register? ");
     fgets(ucommand, 500, stdin);
     if (strcmp(ucommand, "login\n") == 0) {
-        char username[50];
-        char password[50];
-        printf("username: ");
-        fgets(username, 50, stdin);
-        printf("password: ");
-        fgets(password, 50, stdin);
-        write(sd, "login", 6);
-        write(sd, username, 50);
-        write(sd, password, 50);
+        while (!loginc) {
+            printf("username: \n");
+            fgets((char *)cuser.username, 50, stdin);
+            printf("password: \n");
+            fgets((char *)cuser.password, 50, stdin);
+            write(sd, "login", 9);
+            cuser.rating = 0;
+            write(sd, &cuser, sizeof(struct user));
+            read(sd, &loginc, 4);
+        }
     }
     else if (strcmp(ucommand, "register\n") == 0) {
-        char username[50];
-        char password[50];
         printf("username: \n");
-        fgets(username, 50, stdin);
+        fgets((char *)cuser.username, 50, stdin);
         printf("password: \n");
-        fgets(password, 50, stdin);
+        fgets((char *)cuser.password, 50, stdin);
         write(sd, "register", 9);
-        write(sd, username, 50);
-        write(sd, password, 50);
+        cuser.rating = 0;
+        write(sd, &cuser, sizeof(struct user));
     }
     
     while(1) {
