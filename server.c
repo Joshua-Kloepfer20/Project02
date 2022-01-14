@@ -60,8 +60,8 @@ int main() {
       while (!loginc) {
         struct user login;
         read(sd, &login, sizeof(struct user));
-        login.username[strlen(login.username) - 1] = '\0';
-        login.password[strlen(login.password) - 1] = '\0';
+        if (login.username[strlen(login.username) - 1] == '\n') login.username[strlen(login.username) - 1] = '\0';
+        if (login.password[strlen(login.password) - 1] == '\n') login.password[strlen(login.password) - 1] = '\0';
         printf("username: %s\npassword: %s\nrating: %d\n", login.username, login.password, login.rating);
         while (read(fd, &cuser, sizeof(struct user))) {
           printf("username: %s\npassword: %s\nrating: %d\n", cuser.username, cuser.password, cuser.rating);
@@ -82,12 +82,13 @@ int main() {
       }
     }
     else if(strcmp(logoreg, "register") == 0) {
-        lseek(fd, 0, SEEK_END);
-        read(sd, &cuser, sizeof(struct user));
-        cuser.username[strlen(cuser.username) - 1] = '\0';
-        cuser.password[strlen(cuser.password) - 1] = '\0';
-        printf("username: %s\npassword: %s\nrating: %d\n", cuser.username, cuser.password, cuser.rating);
-        write(fd, &cuser, sizeof(struct user));
+      //implement semaphore usage in case one or more users want to log in
+      lseek(fd, 0, SEEK_END);
+      read(sd, &cuser, sizeof(struct user));
+      if (cuser.username[strlen(cuser.username) - 1] == '\n') cuser.username[strlen(cuser.username) - 1] = '\0';
+      if (cuser.password[strlen(cuser.password) - 1] == '\n') cuser.password[strlen(cuser.password) - 1] = '\0';
+      printf("username: %s\npassword: %s\nrating: %d\n", cuser.username, cuser.password, cuser.rating);
+      write(fd, &cuser, sizeof(struct user));
     }
 
     

@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <SDL2/SDL.h>
 
 struct user {char username[50]; char password[50]; int rating;};
 
@@ -26,7 +27,41 @@ int client_handshake() {
 }
 
 int main() {
+    const int WIDTH = 640;
+    const int HEIGHT = 480;
 
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Window * window = SDL_CreateWindow("chess", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    //SDL_MaximizeWindow(window);
+    sleep(5);
+    int w, h;
+    SDL_GetWindowSize(window, &w, &h);
+    printf("width: %d, height: %d\n", w, h);
+    
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_Rect rect;
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = 10;
+    rect.h = 10;
+
+    SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderPresent(renderer);
+
+    SDL_Event event;
+    while(SDL_WaitEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            break;
+        }
+    }
+
+
+    SDL_Quit();
+    return 0;
     int sd = client_handshake();
     struct user cuser;
     char ucommand[500];
@@ -39,7 +74,7 @@ int main() {
             fgets((char *)cuser.username, 50, stdin);
             printf("password: \n");
             fgets((char *)cuser.password, 50, stdin);
-            write(sd, "login", 9);
+            write(sd, "login", 6);
             cuser.rating = 0;
             write(sd, &cuser, sizeof(struct user));
             read(sd, &loginc, 4);
