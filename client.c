@@ -28,7 +28,7 @@ int client_handshake() {
 }
 
 int main() {
-    /*
+    
     const int WIDTH = 640;
     const int HEIGHT = 480;
 
@@ -36,29 +36,65 @@ int main() {
     SDL_Window * window = SDL_CreateWindow("chess", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Surface * image = SDL_LoadBMP("pawn.bmp");
+    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
+    int w, h;
+    int quit = 0;
     
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_Rect rect;
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = 10;
-    rect.h = 10;
-
-    SDL_RenderFillRect(renderer, &rect);
-    SDL_RenderPresent(renderer);
 
     SDL_Event event;
-    while(SDL_WaitEvent(&event)) {
-        if (event.type == SDL_QUIT) {
-            break;
+    SDL_Rect rect[8][8];
+    while(!quit) {
+        while(SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                quit = 1;
+                break;
+            }
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    printf("mouse clicked: %d\n", event.button.x);
+                }
+            }
+            if (event.type == SDL_MOUSEBUTTONUP) {
+                printf("released\n");
+            }
         }
+        SDL_GetWindowSize(window, &w, &h);
+        //printf("w: %d, h: %d\n", rect.w, rect.h);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        int r;
+        int c;
+        for (r = 0; r < 8; r++) {
+            for (c = 0; c < 8; c++) {
+                rect[r][c].x = c*w/8;
+                rect[r][c].y = r*h/8;
+                rect[r][c].w = w/8;
+                rect[r][c].h = h/8;
+                if ((r + c) % 2 == 0) {
+                    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                }
+                else {
+                    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                }
+                SDL_RenderFillRect(renderer, &(rect[r][c]));
+                SDL_RenderCopy(renderer, texture, NULL, &(rect[r][c]));
+            }
+        }
+        /*
+        for (r = 0; r < 8; r++) {
+            for (c = 0; c < 8; c++) {
+                printf("rect: [%d][%d], x: %d, y: %d\n", r, c, rect[r][c].x, rect[r][c].y);
+            }
+        }
+        sleep(10);
+        */
+        SDL_RenderPresent(renderer);
     }
-
-
+    SDL_FreeSurface(image);
     SDL_Quit();
-    return 0;*/
+    return 0;
+
     int sd = client_handshake();
     struct user cuser;
     char ucommand[500];

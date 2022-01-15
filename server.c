@@ -205,6 +205,5 @@ int main() {
     //while(read(sd, input, 1000)) {
 
     //}
-    printf("client had dc\n");
     return 0;
 }
