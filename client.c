@@ -10,7 +10,8 @@
 #include <netdb.h>
 #include <SDL2/SDL.h>
 
-struct user {char username[50]; char password[50]; int rating;};
+struct user {char username[50]; char password[50]; int rating; int logged; };
+struct message {char username[50]; char messsage[50]; };
 
 int client_handshake() {
   struct addrinfo * hints;
@@ -27,16 +28,12 @@ int client_handshake() {
 }
 
 int main() {
+    /*
     const int WIDTH = 640;
     const int HEIGHT = 480;
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window * window = SDL_CreateWindow("chess", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    //SDL_MaximizeWindow(window);
-    sleep(5);
-    int w, h;
-    SDL_GetWindowSize(window, &w, &h);
-    printf("width: %d, height: %d\n", w, h);
     
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     
@@ -61,7 +58,7 @@ int main() {
 
 
     SDL_Quit();
-    return 0;
+    return 0;*/
     int sd = client_handshake();
     struct user cuser;
     char ucommand[500];
@@ -74,26 +71,37 @@ int main() {
             fgets((char *)cuser.username, 50, stdin);
             printf("password: \n");
             fgets((char *)cuser.password, 50, stdin);
-            write(sd, "login", 6);
             cuser.rating = 0;
+            cuser.logged = 0;
             write(sd, &cuser, sizeof(struct user));
             read(sd, &loginc, 4);
+            if (!loginc) {
+                printf("incorrect username or password\n");
+            }
         }
     }
     else if (strcmp(ucommand, "register\n") == 0) {
-        printf("username: \n");
-        fgets((char *)cuser.username, 50, stdin);
-        printf("password: \n");
-        fgets((char *)cuser.password, 50, stdin);
-        write(sd, "register", 9);
-        cuser.rating = 0;
-        write(sd, &cuser, sizeof(struct user));
+        loginc = -1;
+        while (loginc == -1) {
+            printf("username: \n");
+            fgets((char *)cuser.username, 50, stdin);
+            printf("password: \n");
+            fgets((char *)cuser.password, 50, stdin);
+            cuser.rating = 0;
+            cuser.logged = -1;
+            write(sd, &cuser, sizeof(struct user));
+            read(sd, &loginc, 4);
+            if (loginc == -1) {
+                printf("username is taken\n");
+            }
+        }
     }
     
-    while(1) {
-        fgets(ucommand, 500, stdin);
-        printf("gets here\n");
-    }
-
+ //   while(1) {
+ //       fgets(ucommand, 500, stdin);
+ //       printf("gets here\n");
+ //   }
+    close(sd);
+    printf("ending\n");
     return 0;
 }
