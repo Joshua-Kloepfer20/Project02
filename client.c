@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <SDL2/SDL.h>
+#include <time.h>
 
 #define WHITEPAWN 1
 #define WHITEKING 2
@@ -81,19 +82,20 @@ int main() {
     
     const int WIDTH = 640;
     const int HEIGHT = 480;
+    clock_t before = clock() - 50;
     struct user cuser;
     memset(&cuser, 0, sizeof(struct user));
     int board[8][8];
     boardsetup(board, 1);
 
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window * window = SDL_CreateWindow("chess", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+    SDL_Window * window = SDL_CreateWindow("chess", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_Texture * texture;
     int w, h, r, c;
     int quit = 0;
-    
+    int cw, ch;
 
     SDL_Event event;
     struct square gboard[8][8];
@@ -111,6 +113,8 @@ int main() {
     SDL_StartTextInput();
     SDL_SetTextInputRect(&login);
     while(!quit) {
+        cw = w;
+        ch = h;
         while(SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 quit = 1;
@@ -133,41 +137,46 @@ int main() {
             if (event.type == SDL_MOUSEBUTTONUP) {
                 printf("released\n");
             }
-            if (event.type == SDL_TEXTINPUT) {
-                printf("key: %s\n", event.text.text);
-            }
+//            if (event.type == SDL_TEXTINPUT) {
+//                printf("key: %s\n", event.text.text);
+//            }
         }
         SDL_GetWindowSize(window, &w, &h);
         //printf("w: %d, h: %d\n", rect.w, rect.h);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        //SDL_RenderClear(renderer);
         if (cuser.logged == 0) {
-            for (r = 0; r < 8; r++) {
-                for (c = 0; c < 8; c++) {
-                    gboard[r][c].rect.x = c*w/8;
-                    gboard[r][c].rect.y = r*h/8;
-                    gboard[r][c].rect.w = w/8;
-                    gboard[r][c].rect.h = h/8;
-                    if ((r + c) % 2 == 0) {
-                        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-                    }
-                    else {
-                        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                    }
-                    SDL_RenderFillRect(renderer, &(gboard[r][c].rect));
-                    switch (board[r][c]) {
-                        case WHITEPAWN:
-                            gboard[r][c].image = SDL_LoadBMP("whitepawn.bmp");
-                            texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                            SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                            break;
+            if (cw != w || ch != h || clock() - before >= 50) {
+                for (r = 0; r < 8; r++) {
+                    for (c = 0; c < 8; c++) {
+                        gboard[r][c].rect.x = c*w/8;
+                        gboard[r][c].rect.y = r*h/8;
+                        gboard[r][c].rect.w = w/8;
+                        gboard[r][c].rect.h = h/8;
+                        if ((r + c) % 2 == 0) {
+                            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                        }
+                        else {
+                            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                        }
+                        SDL_RenderFillRect(renderer, &(gboard[r][c].rect));
+                        switch (board[r][c]) {
+                            case WHITEPAWN:
+                                gboard[r][c].image = SDL_LoadBMP("whitepawn.bmp");
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                        }
                     }
                 }
+                before = clock();
+                SDL_RenderPresent(renderer);
+
             }
         }
         else {
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-//            SDL_RenderFillRect(renderer, &login);
+            SDL_RenderFillRect(renderer, &login);
 //            SDL_RenderFillRect(renderer, &registerbox);
         }
         /*
@@ -178,7 +187,8 @@ int main() {
         }
         sleep(10);*/
         
-        SDL_RenderPresent(renderer);
+        
+        SDL_Delay(10);
     }
     for (r = 0; r < 8; r++) {
         for (c = 0; c < 8; c++) {
