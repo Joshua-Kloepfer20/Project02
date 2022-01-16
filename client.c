@@ -10,6 +10,7 @@
 #include <netdb.h>
 #include <SDL2/SDL.h>
 #include <time.h>
+#include <SDL2/SDL_ttf.h>
 
 #define WHITEPAWN 1
 #define WHITEKING 2
