@@ -119,7 +119,7 @@ int main() {
                   }
                 }
                 printf("logged: %d\n", cusers[i].logged);
-                write(i, &(cusers[i].logged), 4);
+                write(i, &(cusers[i]), sizeof(struct user));
               }
 
               else if (cusers[i].logged == -1) {
@@ -136,12 +136,12 @@ int main() {
                 }
                 if (cusers[i].logged == 1) {
                   cusers[i].logged = -1;
-                  write(i, &(cusers[i].logged), 4);
+                  write(i, &(cusers[i]), sizeof(struct user));
                   cusers[i].logged = 0;
                   continue;
                 }
                 cusers[i].logged = 1;
-                write(i, &(cusers[i].logged), 4);
+                write(i, &(cusers[i]), sizeof(struct user));
                 cusers[i].rating = 0;
                 printf("username: %s\tpasword: %s\tlogged: %d\n", cusers[i].username, cusers[i].password, cusers[i].logged);
                 lseek(fd, 0, SEEK_END);

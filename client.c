@@ -27,7 +27,7 @@
 
 struct user {char username[50]; char password[50]; int rating; int logged; };
 struct message {char username[50]; char messsage[50]; };
-struct square {SDL_Rect rect; SDL_Surface * image; };
+struct square {SDL_Rect rect; SDL_Surface * image; int img; };
 
 int client_handshake() {
   struct addrinfo * hints;
@@ -79,8 +79,13 @@ void boardsetup(int board[8][8], int side) {
     board[6][7] = WHITEPAWN;
 }
 
+int mouse_collision(int x, int y, SDL_Rect rect) {
+    return x > rect.x && x < rect.x + rect.w && y > rect.y && y < rect.y + rect.h;
+}
+
 int main() {
-    
+    int sd = client_handshake();
+//    int loginc = 0;
     const int WIDTH = 640;
     const int HEIGHT = 480;
     clock_t before = clock() - 50;
@@ -90,29 +95,44 @@ int main() {
     boardsetup(board, 1);
 
     SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
     SDL_Window * window = SDL_CreateWindow("chess", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_Texture * texture;
+    SDL_Texture * texture, * texture2;
+    TTF_Font * font = TTF_OpenFont("./Roboto/Roboto-Medium.ttf", 25);
+    SDL_Color color = {0, 0, 255};
+    SDL_Surface * usertext, * passtext;
     int w, h, r, c;
     int quit = 0;
     int cw, ch;
+    int logw, logh, regw, regh;
 
     SDL_Event event;
     struct square gboard[8][8];
     memset(gboard, 0, 64 * sizeof(struct square));
-    SDL_Rect registerbox;
-    registerbox.x = 150;
-    registerbox.y = 0;
-    registerbox.w = 100;
-    registerbox.h = 100;
-    SDL_Rect login;
-    login.x = 0;
-    login.y = 0;
-    login.w = 100;
-    login.h = 100;
+    SDL_Rect usernamebox, passwordbox;
+    SDL_Rect passwordRect;
+    passwordRect.x = 0;
+    passwordRect.y = 150;
+    passwordRect.w = w;
+    passwordRect.h = 100;
+    int selected = 0;
+    SDL_Rect usernameRect;
+    usernameRect.x = 0;
+    usernameRect.y = 0;
+    usernameRect.w = w;
+    usernameRect.h = 100;
+    SDL_Rect loginbut, registerbut;
+    loginbut.w = 50;
+    loginbut.h = 25;
+    loginbut.x = w / 4 - loginbut.w;
+    loginbut.y = 300;
+    registerbut.w = 50;
+    registerbut.h = 25;
+    registerbut.x = 3 * w / 4 - registerbut.w;
+    registerbut.y = 300;
     SDL_StartTextInput();
-    SDL_SetTextInputRect(&login);
     while(!quit) {
         cw = w;
         ch = h;
@@ -126,9 +146,39 @@ int main() {
                     if (cuser.logged == 1) {
                         for (r = 0; r < 8; r++) {
                             for (c = 0; c < 8; c++) {
-                                if (event.button.x > gboard[r][c].rect.x && event.button.x < gboard[r][c].rect.x + gboard[r][c].rect.w && event.button.y > gboard[r][c].rect.y && event.button.y < gboard[r][c].rect.y + gboard[r][c].rect.h) {
+                                if (mouse_collision(event.button.x, event.button.y, gboard[r][c].rect)) {
                                     printf("rect[%d][%d] was clicked\n", r, c);
                                 }
+                            }
+                        }
+                    }
+                    else {
+                        if (mouse_collision(event.button.x, event.button.y, usernameRect)) {
+                            printf("username selected\n");
+                            selected = 0;
+                        }
+                        else if (mouse_collision(event.button.x, event.button.y, passwordRect)) {
+                            printf("password selected\n");
+                            selected = 1;
+                        }
+                        else if (mouse_collision(event.button.x, event.button.y, loginbut)) {
+                            printf("login\n");
+                            cuser.rating = 0;
+                            cuser.logged = 0;
+                            write(sd, &cuser, sizeof(struct user));
+                            read(sd, &cuser, sizeof(struct user));
+                            if (!cuser.logged) {
+                                printf("incorrect username or password\n");
+                            }
+                        }
+                        else if (mouse_collision(event.button.x, event.button.y, registerbut)) {
+                            printf("register\n");
+                            cuser.logged = -1;
+                            cuser.rating = 0;
+                            write(sd, &cuser, sizeof(struct user));
+                            read(sd, &cuser, sizeof(struct user));
+                            if (cuser.logged == -1) {
+                                printf("username is taken\n");
                             }
                         }
                     }
@@ -136,17 +186,25 @@ int main() {
                 }
             }
             if (event.type == SDL_MOUSEBUTTONUP) {
-                printf("released\n");
+                //printf("released\n");
             }
-//            if (event.type == SDL_TEXTINPUT) {
-//                printf("key: %s\n", event.text.text);
-//            }
+            if (event.type == SDL_TEXTINPUT) {
+                printf("key: %s\n", event.text.text);
+                    if (selected == 0 && strlen(cuser.username) < 50) {
+                        printf("change username\n");
+                        strcat(cuser.username, event.text.text);
+                    }
+                    if (selected == 1 && strlen(cuser.password) < 50) {
+                        printf("password change\n");
+                        strcat(cuser.password, event.text.text);
+                    }
+            }
         }
         SDL_GetWindowSize(window, &w, &h);
         //printf("w: %d, h: %d\n", rect.w, rect.h);
         //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         //SDL_RenderClear(renderer);
-        if (cuser.logged == 0) {
+        if (cuser.logged == 1) {
             if (cw != w || ch != h || clock() - before >= 50) {
                 for (r = 0; r < 8; r++) {
                     for (c = 0; c < 8; c++) {
@@ -163,7 +221,11 @@ int main() {
                         SDL_RenderFillRect(renderer, &(gboard[r][c].rect));
                         switch (board[r][c]) {
                             case WHITEPAWN:
+                                if (gboard[r][c].img != WHITEPAWN) {
                                 gboard[r][c].image = SDL_LoadBMP("whitepawn.bmp");
+                                gboard[r][c].img = WHITEPAWN;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
                                 texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
                                 SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
                                 break;
@@ -176,9 +238,43 @@ int main() {
             }
         }
         else {
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-            SDL_RenderFillRect(renderer, &login);
-//            SDL_RenderFillRect(renderer, &registerbox);
+            //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            //SDL_RenderClear(renderer);
+            usertext = TTF_RenderText_Solid(font, cuser.username, color);
+            passtext = TTF_RenderText_Solid(font, cuser.password, color);
+            texture = SDL_CreateTextureFromSurface(renderer, usertext);
+            texture2 = SDL_CreateTextureFromSurface(renderer, passtext);
+            SDL_QueryTexture(texture, NULL, NULL, &logw, &logh);
+            SDL_QueryTexture(texture2, NULL, NULL, &regw, &regh);
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+            passwordRect.w = w;
+            usernameRect.w = w;
+            SDL_RenderFillRect(renderer, &usernameRect);
+            SDL_RenderFillRect(renderer, &passwordRect);
+            //printf("regw: %d, regh: %d, logw: %d, logh: %d\n", regw, regh, logw, logh);
+            usernamebox.x = 0;
+            usernamebox.y = 0;
+            usernamebox.w = logw;
+            usernamebox.h = logh;
+            SDL_RenderCopy(renderer, texture, NULL, &usernamebox);
+            passwordbox.x = 0;
+            passwordbox.y = 150;
+            passwordbox.w = regw;
+            passwordbox.h = regh;
+            SDL_RenderCopy(renderer, texture2, NULL, &passwordbox);
+            registerbut.x = 3 * w / 4 - registerbut.w;
+            loginbut.x = w / 4 - loginbut.w;
+            usertext = TTF_RenderText_Solid(font, "login", color);
+            passtext = TTF_RenderText_Solid(font, "register", color);
+            texture = SDL_CreateTextureFromSurface(renderer, usertext);
+            texture2 = SDL_CreateTextureFromSurface(renderer, passtext);
+            SDL_RenderFillRect(renderer, &loginbut);
+            SDL_RenderFillRect(renderer, &registerbut);
+            SDL_RenderCopy(renderer, texture, NULL, &loginbut);
+            SDL_RenderCopy(renderer, texture2, NULL, &registerbut);
+
+            SDL_RenderPresent(renderer);
+//            SDL_RenderFillRect(renderer, &passwordbox);
         }
         /*
         for (r = 0; r < 8; r++) {
@@ -198,13 +294,18 @@ int main() {
             }
         }
     }
+    TTF_CloseFont(font);
     SDL_StopTextInput();
+    TTF_Quit();
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyTexture(texture);
     SDL_Quit();
     return 0;
-
-    int sd = client_handshake();
+/*
+//    int sd = client_handshake();
     char ucommand[500];
-    int loginc = 0;
+//    int loginc = 0;
     printf("login or register? ");
     fgets(ucommand, 500, stdin);
     if (strcmp(ucommand, "login\n") == 0) {
@@ -246,4 +347,5 @@ int main() {
     close(sd);
     printf("ending\n");
     return 0;
+    */
 }
