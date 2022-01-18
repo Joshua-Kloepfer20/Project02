@@ -166,7 +166,7 @@ int main() {
                             cuser.rating = 0;
                             cuser.logged = 0;
                             write(sd, &cuser, sizeof(struct user));
-                            read(sd, &cuser, sizeof(struct user));
+                            read(sd, &(cuser.logged), 4);
                             if (!cuser.logged) {
                                 printf("incorrect username or password\n");
                             }
@@ -176,7 +176,7 @@ int main() {
                             cuser.logged = -1;
                             cuser.rating = 0;
                             write(sd, &cuser, sizeof(struct user));
-                            read(sd, &cuser, sizeof(struct user));
+                            read(sd, &(cuser.logged), 4);
                             if (cuser.logged == -1) {
                                 printf("username is taken\n");
                             }
@@ -285,7 +285,7 @@ int main() {
         sleep(10);*/
         
         
-        SDL_Delay(10);
+        SDL_Delay(20);
     }
     for (r = 0; r < 8; r++) {
         for (c = 0; c < 8; c++) {
