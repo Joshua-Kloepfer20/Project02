@@ -229,6 +229,15 @@ int main() {
                                 texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
                                 SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
                                 break;
+                            case WHITEKING:
+                                if (gboard[r][c].img != WHITEKING) {
+                                gboard[r][c].image = SDL_LoadBMP("whiteking.bmp");
+                                gboard[r][c].img = WHITEKING;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
                         }
                     }
                 }
