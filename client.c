@@ -222,7 +222,7 @@ int main() {
                         switch (board[r][c]) {
                             case WHITEKING:
                                 if (gboard[r][c].img != WHITEKING) {
-                                gboard[r][c].image = SDL_LoadBMP("whiteking.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/whiteking.bmp");
                                 gboard[r][c].img = WHITEKING;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -231,7 +231,7 @@ int main() {
                                 break;
                             case WHITEQUEEN:
                                 if (gboard[r][c].img != WHITEQUEEN) {
-                                gboard[r][c].image = SDL_LoadBMP("whitequeen.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/whitequeen.bmp");
                                 gboard[r][c].img = WHITEQUEEN;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -240,7 +240,7 @@ int main() {
                                 break;
                             case WHITEBISHOP:
                                 if (gboard[r][c].img != WHITEBISHOP) {
-                                gboard[r][c].image = SDL_LoadBMP("whitebishop.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/whitebishop.bmp");
                                 gboard[r][c].img = WHITEBISHOP;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -249,7 +249,7 @@ int main() {
                                 break;
                             case WHITEKNIGHT:
                                 if (gboard[r][c].img != WHITEKNIGHT) {
-                                gboard[r][c].image = SDL_LoadBMP("whiteknight.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/whiteknight.bmp");
                                 gboard[r][c].img = WHITEKNIGHT;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -258,7 +258,7 @@ int main() {
                                 break;
                             case WHITEROOK:
                                 if (gboard[r][c].img != WHITEROOK) {
-                                gboard[r][c].image = SDL_LoadBMP("whiterook.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/whiterook.bmp");
                                 gboard[r][c].img = WHITEROOK;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -267,7 +267,7 @@ int main() {
                                 break;
                             case WHITEPAWN:
                                 if (gboard[r][c].img != WHITEPAWN) {
-                                gboard[r][c].image = SDL_LoadBMP("whitepawn.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/whitepawn.bmp");
                                 gboard[r][c].img = WHITEPAWN;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -276,7 +276,7 @@ int main() {
                                 break;
                             case BLACKKING:
                                 if (gboard[r][c].img != BLACKKING) {
-                                gboard[r][c].image = SDL_LoadBMP("blackking.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/blackking.bmp");
                                 gboard[r][c].img = BLACKKING;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -285,7 +285,7 @@ int main() {
                                 break;
                             case BLACKQUEEN:
                                 if (gboard[r][c].img != BLACKQUEEN) {
-                                gboard[r][c].image = SDL_LoadBMP("blackqueen.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/blackqueen.bmp");
                                 gboard[r][c].img = BLACKQUEEN;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -294,7 +294,7 @@ int main() {
                                 break;
                             case BLACKBISHOP:
                                 if (gboard[r][c].img != BLACKBISHOP) {
-                                gboard[r][c].image = SDL_LoadBMP("blackbishop.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/blackbishop.bmp");
                                 gboard[r][c].img = BLACKBISHOP;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -303,7 +303,7 @@ int main() {
                                 break;
                             case BLACKKNIGHT:
                                 if (gboard[r][c].img != BLACKKNIGHT) {
-                                gboard[r][c].image = SDL_LoadBMP("blackknight.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/blackknight.bmp");
                                 gboard[r][c].img = BLACKKNIGHT;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -312,7 +312,7 @@ int main() {
                                 break;
                             case BLACKROOK:
                                 if (gboard[r][c].img != BLACKROOK) {
-                                gboard[r][c].image = SDL_LoadBMP("blackrook.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/blackrook.bmp");
                                 gboard[r][c].img = BLACKROOK;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
@@ -321,7 +321,7 @@ int main() {
                                 break;
                             case BLACKPAWN:
                                 if (gboard[r][c].img != BLACKPAWN) {
-                                gboard[r][c].image = SDL_LoadBMP("blackpawn.bmp");
+                                gboard[r][c].image = SDL_LoadBMP("img/blackpawn.bmp");
                                 gboard[r][c].img = BLACKPAWN;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
