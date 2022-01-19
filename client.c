@@ -220,6 +220,51 @@ int main() {
                         }
                         SDL_RenderFillRect(renderer, &(gboard[r][c].rect));
                         switch (board[r][c]) {
+                            case WHITEKING:
+                                if (gboard[r][c].img != WHITEKING) {
+                                gboard[r][c].image = SDL_LoadBMP("whiteking.bmp");
+                                gboard[r][c].img = WHITEKING;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                            case WHITEQUEEN:
+                                if (gboard[r][c].img != WHITEQUEEN) {
+                                gboard[r][c].image = SDL_LoadBMP("whitequeen.bmp");
+                                gboard[r][c].img = WHITEQUEEN;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                            case WHITEBISHOP:
+                                if (gboard[r][c].img != WHITEBISHOP) {
+                                gboard[r][c].image = SDL_LoadBMP("whitebishop.bmp");
+                                gboard[r][c].img = WHITEBISHOP;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                            case WHITEKNIGHT:
+                                if (gboard[r][c].img != WHITEKNIGHT) {
+                                gboard[r][c].image = SDL_LoadBMP("whiteknight.bmp");
+                                gboard[r][c].img = WHITEKNIGHT;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                            case WHITEROOK:
+                                if (gboard[r][c].img != WHITEROOK) {
+                                gboard[r][c].image = SDL_LoadBMP("whiterook.bmp");
+                                gboard[r][c].img = WHITEROOK;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
                             case WHITEPAWN:
                                 if (gboard[r][c].img != WHITEPAWN) {
                                 gboard[r][c].image = SDL_LoadBMP("whitepawn.bmp");
@@ -229,10 +274,55 @@ int main() {
                                 texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
                                 SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
                                 break;
-                            case WHITEKING:
-                                if (gboard[r][c].img != WHITEKING) {
-                                gboard[r][c].image = SDL_LoadBMP("whiteking.bmp");
-                                gboard[r][c].img = WHITEKING;
+                            case BLACKKING:
+                                if (gboard[r][c].img != BLACKKING) {
+                                gboard[r][c].image = SDL_LoadBMP("blackking.bmp");
+                                gboard[r][c].img = BLACKKING;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                            case BLACKQUEEN:
+                                if (gboard[r][c].img != BLACKQUEEN) {
+                                gboard[r][c].image = SDL_LoadBMP("blackqueen.bmp");
+                                gboard[r][c].img = BLACKQUEEN;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                            case BLACKBISHOP:
+                                if (gboard[r][c].img != BLACKBISHOP) {
+                                gboard[r][c].image = SDL_LoadBMP("blackbishop.bmp");
+                                gboard[r][c].img = BLACKBISHOP;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                            case BLACKKNIGHT:
+                                if (gboard[r][c].img != BLACKKNIGHT) {
+                                gboard[r][c].image = SDL_LoadBMP("blackknight.bmp");
+                                gboard[r][c].img = BLACKKNIGHT;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                            case BLACKROOK:
+                                if (gboard[r][c].img != BLACKROOK) {
+                                gboard[r][c].image = SDL_LoadBMP("blackrook.bmp");
+                                gboard[r][c].img = BLACKROOK;
+                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
+                                }
+                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
+                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                break;
+                            case BLACKPAWN:
+                                if (gboard[r][c].img != BLACKPAWN) {
+                                gboard[r][c].image = SDL_LoadBMP("blackpawn.bmp");
+                                gboard[r][c].img = BLACKPAWN;
                                 gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
                                 }
                                 texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
