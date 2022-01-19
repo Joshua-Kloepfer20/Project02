@@ -188,15 +188,41 @@ int main() {
             if (event.type == SDL_MOUSEBUTTONUP) {
                 //printf("released\n");
             }
-            if (event.type == SDL_TEXTINPUT) {
+            if (event.type == SDL_TEXTINPUT || event.type == SDL_KEYDOWN) {
                 printf("key: %s\n", event.text.text);
-                    if (selected == 0 && strlen(cuser.username) < 50) {
-                        printf("change username\n");
-                        strcat(cuser.username, event.text.text);
-                    }
-                    if (selected == 1 && strlen(cuser.password) < 50) {
-                        printf("password change\n");
-                        strcat(cuser.password, event.text.text);
+                    if (cuser.logged == 0 || cuser.logged == -1) {
+                        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
+                            printf("login\n");
+                            cuser.rating = 0;
+                            cuser.logged = 0;
+                            write(sd, &cuser, sizeof(struct user));
+                            read(sd, &(cuser.logged), 4);
+                            if (!cuser.logged) {
+                                printf("incorrect username or password\n");
+                            }
+                        }
+                        if (selected == 0 && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_BACKSPACE && strlen(cuser.username) > 0) {
+                            printf("doing this stuff\n");
+                            cuser.username[strlen(cuser.username) - 1] = '\0';                        
+                        }
+                        if (selected == 1 && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_BACKSPACE && strlen(cuser.password) > 0) {
+                            cuser.password[strlen(cuser.password) - 1] = '\0';                        
+                        }
+                        if (selected == 0 && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB) {
+                            printf("tab\n");
+                            selected = 1;
+                        }
+                        else if (selected == 1 && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB) {
+                            selected = 0;
+                        }
+                        if (selected == 0 && event.type == SDL_TEXTINPUT && strlen(cuser.username) < 50) {
+                            printf("change username\n");
+                            strcat(cuser.username, event.text.text);
+                        }
+                        if (selected == 1 && event.type == SDL_TEXTINPUT && strlen(cuser.password) < 50) {
+                            printf("password change\n");
+                            strcat(cuser.password, event.text.text);
+                        }
                     }
             }
         }
