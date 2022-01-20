@@ -27,7 +27,8 @@
 
 struct user {char username[50]; char password[50]; int rating; int logged; };
 struct message {char username[50]; char messsage[50]; };
-struct square {SDL_Rect rect; SDL_Surface * image; int img; };
+struct piece {SDL_Surface * image; int type; int moves; /*for pawns*/ void (*move)(struct piece *, int r, int c); };
+struct square {SDL_Rect rect; struct piece * cpiece; };
 
 int client_handshake() {
   struct addrinfo * hints;
@@ -43,40 +44,92 @@ int client_handshake() {
   return sd;
 }
 
-void boardsetup(int board[8][8], int side) {
-    memset(board, 0, sizeof(int) * 64);
-    board[0][0] = BLACKROOK;
-    board[0][1] = BLACKKNIGHT;
-    board[0][2] = BLACKBISHOP;
-    board[0][3] = BLACKQUEEN;
-    board[0][4] = BLACKKING;
-    board[0][5] = BLACKBISHOP;
-    board[0][6] = BLACKKNIGHT;
-    board[0][7] = BLACKROOK;
-    board[1][0] = BLACKPAWN;
-    board[1][1] = BLACKPAWN;
-    board[1][2] = BLACKPAWN;
-    board[1][3] = BLACKPAWN;
-    board[1][4] = BLACKPAWN;
-    board[1][5] = BLACKPAWN;
-    board[1][6] = BLACKPAWN;
-    board[1][7] = BLACKPAWN;
-    board[7][0] = WHITEROOK;
-    board[7][1] = WHITEKNIGHT;
-    board[7][2] = WHITEBISHOP;
-    board[7][3] = WHITEQUEEN;
-    board[7][4] = WHITEKING;
-    board[7][5] = WHITEBISHOP;
-    board[7][6] = WHITEKNIGHT;
-    board[7][7] = WHITEROOK;
-    board[6][0] = WHITEPAWN;
-    board[6][1] = WHITEPAWN;
-    board[6][2] = WHITEPAWN;
-    board[6][3] = WHITEPAWN;
-    board[6][4] = WHITEPAWN;
-    board[6][5] = WHITEPAWN;
-    board[6][6] = WHITEPAWN;
-    board[6][7] = WHITEPAWN;
+void RookMove(struct piece *, int r, int c) {
+    printf("WORKS\n");
+}
+
+void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
+    memset(cpieces, 0, sizeof(struct piece) * 32);
+    memset(gboard, 0, sizeof(struct square) * 64);
+    cpieces[0].type = BLACKROOK;
+    cpieces[0].image = SDL_LoadBMP("img/blackrook.bmp");
+    cpieces[0].move = &RookMove;
+    cpieces[1].type = BLACKKNIGHT;
+    cpieces[1].image = SDL_LoadBMP("img/blackknight.bmp");
+    cpieces[2].type = BLACKBISHOP;
+    cpieces[2].image = SDL_LoadBMP("img/blackbishop.bmp");
+    cpieces[3].type = BLACKQUEEN;
+    cpieces[3].image = SDL_LoadBMP("img/blackqueen.bmp");
+    cpieces[4].type = BLACKKING;
+    cpieces[4].image = SDL_LoadBMP("img/blackking.bmp");
+    cpieces[5].type = BLACKBISHOP;
+    cpieces[5].image = SDL_LoadBMP("img/blackbishop.bmp");
+    cpieces[6].type = BLACKKNIGHT;
+    cpieces[6].image = SDL_LoadBMP("img/blackknight.bmp");
+    cpieces[7].type = BLACKROOK;
+    cpieces[7].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[8].type = BLACKPAWN;
+    cpieces[8].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[9].type = BLACKPAWN;
+    cpieces[9].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[10].type = BLACKPAWN;
+    cpieces[10].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[11].type = BLACKPAWN;
+    cpieces[11].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[12].type = BLACKPAWN;
+    cpieces[12].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[13].type = BLACKPAWN;
+    cpieces[13].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[14].type = BLACKPAWN;
+    cpieces[14].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[15].type = BLACKPAWN;
+    cpieces[15].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[16].type = WHITEPAWN;
+    cpieces[16].image = SDL_LoadBMP("img/whitepawn.bmp");
+    cpieces[17].type = WHITEPAWN;
+    cpieces[17].image = SDL_LoadBMP("img/whitepawn.bmp");
+    cpieces[18].type = WHITEPAWN;
+    cpieces[18].image = SDL_LoadBMP("img/whitepawn.bmp");
+    cpieces[19].type = WHITEPAWN;
+    cpieces[19].image = SDL_LoadBMP("img/whitepawn.bmp");
+    cpieces[20].type = WHITEPAWN;
+    cpieces[20].image = SDL_LoadBMP("img/whitepawn.bmp");
+    cpieces[21].type = WHITEPAWN;
+    cpieces[21].image = SDL_LoadBMP("img/whitepawn.bmp");
+    cpieces[22].type = WHITEPAWN;
+    cpieces[22].image = SDL_LoadBMP("img/whitepawn.bmp");
+    cpieces[23].type = WHITEPAWN;
+    cpieces[23].image = SDL_LoadBMP("img/whitepawn.bmp");
+    cpieces[24].type = WHITEROOK;
+    cpieces[24].image = SDL_LoadBMP("img/whiterook.bmp");
+    cpieces[25].type = WHITEKNIGHT;
+    cpieces[25].image = SDL_LoadBMP("img/whiteknight.bmp");
+    cpieces[26].type = WHITEBISHOP;
+    cpieces[26].image = SDL_LoadBMP("img/whitebishop.bmp");
+    cpieces[27].type = WHITEQUEEN;
+    cpieces[27].image = SDL_LoadBMP("img/whitequeen.bmp");
+    cpieces[28].type = WHITEKING;
+    cpieces[28].image = SDL_LoadBMP("img/whiteking.bmp");
+    cpieces[29].type = WHITEBISHOP;
+    cpieces[29].image = SDL_LoadBMP("img/whitebishop.bmp");
+    cpieces[30].type = WHITEKNIGHT;
+    cpieces[30].image = SDL_LoadBMP("img/whiteknight.bmp");
+    cpieces[31].type = WHITEROOK;
+    cpieces[31].image = SDL_LoadBMP("img/whiterook.bmp");
+    int r, c;
+    for (r = 0; r < 2; r++) {
+        for (c = 0; c < 8; c++) {
+            gboard[r][c].cpiece = &(cpieces[r * 8 + c]);
+        }
+    }
+    for (r = 6; r < 8; r++) {
+        for (c = 0; c < 8; c++) {
+            gboard[r][c].cpiece = &(cpieces[(r - 4) * 8 + c]);
+        }
+    }
+    for (r = 0; r < 32; r++) {
+        cpieces[r].image = SDL_ConvertSurface(cpieces[r].image, cpieces[r].image->format, 0);
+    }
 }
 
 int mouse_collision(int x, int y, SDL_Rect rect) {
@@ -91,9 +144,12 @@ int main() {
     clock_t before = clock() - 50;
     struct user cuser;
     memset(&cuser, 0, sizeof(struct user));
-    int board[8][8];
-    boardsetup(board, 1);
-
+    struct square gboard[8][8];
+//   int board[8][8];
+    struct piece cpieces[32];
+    boardsetup(cpieces, gboard);
+    cpieces[0].move(&(cpieces[0]), 0, 0);
+//    printf("cpieces: type %p\n", cpieces[5].image);
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     SDL_Window * window = SDL_CreateWindow("chess", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -109,8 +165,6 @@ int main() {
     int logw, logh, regw, regh;
 
     SDL_Event event;
-    struct square gboard[8][8];
-    memset(gboard, 0, 64 * sizeof(struct square));
     SDL_Rect usernamebox, passwordbox;
     SDL_Rect passwordRect;
     passwordRect.x = 0;
@@ -245,115 +299,58 @@ int main() {
                             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
                         }
                         SDL_RenderFillRect(renderer, &(gboard[r][c].rect));
-                        switch (board[r][c]) {
-                            case WHITEKING:
-                                if (gboard[r][c].img != WHITEKING) {
-                                gboard[r][c].image = SDL_LoadBMP("img/whiteking.bmp");
-                                gboard[r][c].img = WHITEKING;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case WHITEQUEEN:
-                                if (gboard[r][c].img != WHITEQUEEN) {
-                                gboard[r][c].image = SDL_LoadBMP("img/whitequeen.bmp");
-                                gboard[r][c].img = WHITEQUEEN;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case WHITEBISHOP:
-                                if (gboard[r][c].img != WHITEBISHOP) {
-                                gboard[r][c].image = SDL_LoadBMP("img/whitebishop.bmp");
-                                gboard[r][c].img = WHITEBISHOP;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case WHITEKNIGHT:
-                                if (gboard[r][c].img != WHITEKNIGHT) {
-                                gboard[r][c].image = SDL_LoadBMP("img/whiteknight.bmp");
-                                gboard[r][c].img = WHITEKNIGHT;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case WHITEROOK:
-                                if (gboard[r][c].img != WHITEROOK) {
-                                gboard[r][c].image = SDL_LoadBMP("img/whiterook.bmp");
-                                gboard[r][c].img = WHITEROOK;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case WHITEPAWN:
-                                if (gboard[r][c].img != WHITEPAWN) {
-                                gboard[r][c].image = SDL_LoadBMP("img/whitepawn.bmp");
-                                gboard[r][c].img = WHITEPAWN;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case BLACKKING:
-                                if (gboard[r][c].img != BLACKKING) {
-                                gboard[r][c].image = SDL_LoadBMP("img/blackking.bmp");
-                                gboard[r][c].img = BLACKKING;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case BLACKQUEEN:
-                                if (gboard[r][c].img != BLACKQUEEN) {
-                                gboard[r][c].image = SDL_LoadBMP("img/blackqueen.bmp");
-                                gboard[r][c].img = BLACKQUEEN;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case BLACKBISHOP:
-                                if (gboard[r][c].img != BLACKBISHOP) {
-                                gboard[r][c].image = SDL_LoadBMP("img/blackbishop.bmp");
-                                gboard[r][c].img = BLACKBISHOP;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case BLACKKNIGHT:
-                                if (gboard[r][c].img != BLACKKNIGHT) {
-                                gboard[r][c].image = SDL_LoadBMP("img/blackknight.bmp");
-                                gboard[r][c].img = BLACKKNIGHT;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case BLACKROOK:
-                                if (gboard[r][c].img != BLACKROOK) {
-                                gboard[r][c].image = SDL_LoadBMP("img/blackrook.bmp");
-                                gboard[r][c].img = BLACKROOK;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
-                            case BLACKPAWN:
-                                if (gboard[r][c].img != BLACKPAWN) {
-                                gboard[r][c].image = SDL_LoadBMP("img/blackpawn.bmp");
-                                gboard[r][c].img = BLACKPAWN;
-                                gboard[r][c].image = SDL_ConvertSurface(gboard[r][c].image, gboard[r][c].image->format, 0);
-                                }
-                                texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].image);
-                                SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                break;
+                        if (gboard[r][c].cpiece != NULL) {
+                            printf("gets here\n");
+                            switch (gboard[r][c].cpiece->type) {
+                                case WHITEKING:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case WHITEQUEEN:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case WHITEBISHOP:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case WHITEKNIGHT:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case WHITEROOK:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case WHITEPAWN:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case BLACKKING:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case BLACKQUEEN:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case BLACKBISHOP:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case BLACKKNIGHT:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case BLACKROOK:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                                case BLACKPAWN:
+                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
+                                    break;
+                            }
                         }
                     }
                 }
@@ -412,12 +409,8 @@ int main() {
         
         SDL_Delay(20);
     }
-    for (r = 0; r < 8; r++) {
-        for (c = 0; c < 8; c++) {
-            if (gboard[r][c].image != NULL) {
-                SDL_FreeSurface(gboard[r][c].image);
-            }
-        }
+    for (r = 0; r < 32; r++) {
+        SDL_FreeSurface(cpieces[r].image);
     }
     TTF_CloseFont(font);
     SDL_StopTextInput();
