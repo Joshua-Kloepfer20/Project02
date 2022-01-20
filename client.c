@@ -27,7 +27,7 @@
 
 struct user {char username[50]; char password[50]; int rating; int logged; };
 struct message {char username[50]; char messsage[50]; };
-struct piece {SDL_Surface * image; int type; int moves; /*for pawns*/ void (*move)(struct piece *, int r, int c); };
+struct piece {SDL_Surface * image; int type; int moves; /*for pawns*/ int ** (*movecheck)(struct square **, int, int); };
 struct square {SDL_Rect rect; struct piece * cpiece; };
 
 int client_handshake() {
@@ -44,8 +44,12 @@ int client_handshake() {
   return sd;
 }
 
-void RookMove(struct piece *, int r, int c) {
-    printf("WORKS\n");
+int ** RookMoveCheck(struct square gboard[8][8], int r, int c) {
+    int rcheck, ccheck;
+    for (rcheck = 0; rcheck < 8; rcheck++) {
+        for (ccheck = 0; ccheck < 8; ccheck++) {
+        }
+    }
 }
 
 void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
@@ -53,7 +57,7 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     memset(gboard, 0, sizeof(struct square) * 64);
     cpieces[0].type = BLACKROOK;
     cpieces[0].image = SDL_LoadBMP("img/blackrook.bmp");
-    cpieces[0].move = &RookMove;
+    cpieces[0].movecheck = &RookMoveCheck;
     cpieces[1].type = BLACKKNIGHT;
     cpieces[1].image = SDL_LoadBMP("img/blackknight.bmp");
     cpieces[2].type = BLACKBISHOP;
@@ -148,7 +152,6 @@ int main() {
 //   int board[8][8];
     struct piece cpieces[32];
     boardsetup(cpieces, gboard);
-    cpieces[0].move(&(cpieces[0]), 0, 0);
 //    printf("cpieces: type %p\n", cpieces[5].image);
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
@@ -300,7 +303,6 @@ int main() {
                         }
                         SDL_RenderFillRect(renderer, &(gboard[r][c].rect));
                         if (gboard[r][c].cpiece != NULL) {
-                            printf("gets here\n");
                             switch (gboard[r][c].cpiece->type) {
                                 case WHITEKING:
                                     texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
