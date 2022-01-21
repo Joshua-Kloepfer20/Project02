@@ -27,7 +27,7 @@
 
 struct user {char username[50]; char password[50]; int rating; int logged; };
 struct message {char username[50]; char messsage[50]; };
-struct piece {SDL_Surface * image; int type; int moves; /*for pawns*/ int ** (*movecheck)(struct square **, int, int); };
+struct piece {SDL_Surface * image; int type; int moves; /*for pawns*/ void (*movecheck)(struct square **, int, int, int **); };
 struct square {SDL_Rect rect; struct piece * cpiece; };
 
 int client_handshake() {
@@ -44,11 +44,100 @@ int client_handshake() {
   return sd;
 }
 
-int ** RookMoveCheck(struct square gboard[8][8], int r, int c) {
+void RookMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
     int rcheck, ccheck;
-    for (rcheck = 0; rcheck < 8; rcheck++) {
-        for (ccheck = 0; ccheck < 8; ccheck++) {
+    memset(board, 0, sizeof(int) * 64);
+    if (r < 7) {
+        rcheck = r + 1;
+        ccheck = c;
+        while (rcheck < 8 && gboard[rcheck][ccheck].cpiece == NULL) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEROOK) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKROOK))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck++;
         }
+    }
+    if (r > 0) {
+        rcheck = r - 1;
+        ccheck = c;
+        while (rcheck >= 0 && gboard[rcheck][ccheck].cpiece == NULL) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEROOK) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKROOK))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck--;
+        }
+    }
+    if (c < 7) {
+        rcheck = r;
+        ccheck = c + 1;
+        while (ccheck < 8 && gboard[rcheck][ccheck].cpiece == NULL) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEROOK) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKROOK))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            ccheck++;
+        }
+    }
+    if (c > 0) {
+        rcheck = r;
+        ccheck = c - 1;
+        while (ccheck >= 0 && gboard[rcheck][ccheck].cpiece == NULL) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEROOK) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKROOK))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            ccheck--;
+        }
+    }
+}
+
+void KnightMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {\
+    int rcheck, ccheck;
+    rcheck = r + 2;
+    ccheck = c + 1;
+    if (rcheck < 8 && ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEKNIGHT) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKKNIGHT))) {
+        board[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 2;
+    ccheck = c - 1;
+    if (rcheck < 8 && ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEKNIGHT) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKKNIGHT))) {
+        board[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 2;
+    ccheck = c + 1;
+    if (rcheck >= 0 && ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEKNIGHT) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKKNIGHT))) {
+        board[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 2;
+    ccheck = c - 1;
+    if (rcheck >= 0 && ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEKNIGHT) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKKNIGHT))) {
+        board[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c + 2;
+    if (rcheck < 8 && ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEKNIGHT) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKKNIGHT))) {
+        board[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c + 2;
+    if (rcheck >= 0 && ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEKNIGHT) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKKNIGHT))) {
+        board[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c - 2;
+    if (rcheck < 8 && ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEKNIGHT) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKKNIGHT))) {
+        board[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c - 2;
+    if (rcheck >= 0 && ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEKNIGHT) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKKNIGHT))) {
+        board[rcheck][ccheck] = 1;
     }
 }
 
@@ -60,6 +149,7 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     cpieces[0].movecheck = &RookMoveCheck;
     cpieces[1].type = BLACKKNIGHT;
     cpieces[1].image = SDL_LoadBMP("img/blackknight.bmp");
+    cpieces[1].movecheck = &KnightMoveCheck;
     cpieces[2].type = BLACKBISHOP;
     cpieces[2].image = SDL_LoadBMP("img/blackbishop.bmp");
     cpieces[3].type = BLACKQUEEN;
@@ -149,7 +239,7 @@ int main() {
     struct user cuser;
     memset(&cuser, 0, sizeof(struct user));
     struct square gboard[8][8];
-//   int board[8][8];
+    int board[8][8];
     struct piece cpieces[32];
     boardsetup(cpieces, gboard);
 //    printf("cpieces: type %p\n", cpieces[5].image);
@@ -204,7 +294,12 @@ int main() {
                         for (r = 0; r < 8; r++) {
                             for (c = 0; c < 8; c++) {
                                 if (mouse_collision(event.button.x, event.button.y, gboard[r][c].rect)) {
-                                    printf("rect[%d][%d] was clicked\n", r, c);
+                                    int i, z;
+                                    for (i = 0; i < 8; i++) {
+                                        for (z = 0; z < 8; z++) {
+                                            printf("move[%d][%d]: %d", i, z, board[i][z]);
+                                        }
+                                    }
                                 }
                             }
                         }
