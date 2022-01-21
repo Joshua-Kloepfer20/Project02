@@ -10,8 +10,23 @@
 #include <netdb.h>
 #include <sys/select.h>
 
+#define WHITEPAWN 1
+#define WHITEKING 2
+#define WHITEQUEEN 3
+#define WHITEBISHOP 4
+#define WHITEKNIGHT 5
+#define WHITEROOK 6
+#define BLACKPAWN 7
+#define BLACKKING 8
+#define BLACKQUEEN 9
+#define BLACKBISHOP 10
+#define BLACKKNIGHT 11
+#define BLACKROOK 12
+
 struct user {char username[50]; char password[50]; int rating; int logged; };
+struct move {int rcur; int ccur; int r; int c};
 struct message {char username[50]; char messsage[50]; };
+struct board {int board[8][8]; int whitesd; int blacksd; };
 
 int server_bind() {
   int sd = socket(AF_INET, SOCK_STREAM, 0);
@@ -50,6 +65,41 @@ int server_bind() {
   }
   */
 }
+void boardsetup(int board[8][8]) {
+  memset(board, 0, sizeof(int) * 64);
+    board[0][0] = BLACKROOK;
+    board[0][1] = BLACKKNIGHT;
+    board[0][2] = BLACKBISHOP;
+    board[0][3] = BLACKQUEEN;
+    board[0][4] = BLACKKING;
+    board[0][5] = BLACKBISHOP;
+    board[0][6] = BLACKKNIGHT;
+    board[0][7] = BLACKROOK;
+    board[1][0] = BLACKPAWN;
+    board[1][1] = BLACKPAWN;
+    board[1][2] = BLACKPAWN;
+    board[1][3] = BLACKPAWN;
+    board[1][4] = BLACKPAWN;
+    board[1][5] = BLACKPAWN;
+    board[1][6] = BLACKPAWN;
+    board[1][7] = BLACKPAWN;
+    board[7][0] = WHITEROOK;
+    board[7][1] = WHITEKNIGHT;
+    board[7][2] = WHITEBISHOP;
+    board[7][3] = WHITEQUEEN;
+    board[7][4] = WHITEKING;
+    board[7][5] = WHITEBISHOP;
+    board[7][6] = WHITEKNIGHT;
+    board[7][7] = WHITEROOK;
+    board[6][0] = WHITEPAWN;
+    board[6][1] = WHITEPAWN;
+    board[6][2] = WHITEPAWN;
+    board[6][3] = WHITEPAWN;
+    board[6][4] = WHITEPAWN;
+    board[6][5] = WHITEPAWN;
+    board[6][6] = WHITEPAWN;
+    board[6][7] = WHITEPAWN;
+}
 
 int main() {
 
@@ -70,6 +120,9 @@ int main() {
     FD_ZERO(&client);
     FD_SET(sd, &client);
     int i;
+    struct board cboard;
+    memset(&cboard, 0, sizeof(struct board));
+    boardsetup(cboard.board);
     //int test = 0;
     while (1) {
 
@@ -161,49 +214,5 @@ int main() {
         }
       }
     }
-      
-      /*
-      read(sd, logoreg, 9);
-      if (strcmp(logoreg, "login") == 0) {
-        while (!loginc) {
-          struct user login;
-          read(sd, &login, sizeof(struct user));
-          if (login.username[strlen(login.username) - 1] == '\n') login.username[strlen(login.username) - 1] = '\0';
-          if (login.password[strlen(login.password) - 1] == '\n') login.password[strlen(login.password) - 1] = '\0';
-          printf("username: %s\npassword: %s\nrating: %d\n", login.username, login.password, login.rating);
-          while (read(fd, &cuser, sizeof(struct user))) {
-            printf("username: %s\npassword: %s\nrating: %d\n", cuser.username, cuser.password, cuser.rating);
-            if (strcmp(cuser.username, login.username) == 0 && strcmp(cuser.password, login.password) == 0) {
-              printf("we break\n");
-              break;
-            }
-          }
-          if (strcmp(cuser.username, login.username) == 0 && strcmp(cuser.password, login.password) == 0) {
-            printf("user has logged in\n");
-            loginc = 1;
-            write(sd, &loginc, 4);
-          }
-          else {
-            printf("wrong info\n");
-            write(sd, &loginc, 4);
-          }
-        }
-      }
-      else if(strcmp(logoreg, "register") == 0) {
-        //implement semaphore usage in case one or more users want to log in
-        lseek(fd, 0, SEEK_END);
-        read(sd, &cuser, sizeof(struct user));
-        if (cuser.username[strlen(cuser.username) - 1] == '\n') cuser.username[strlen(cuser.username) - 1] = '\0';
-        if (cuser.password[strlen(cuser.password) - 1] == '\n') cuser.password[strlen(cuser.password) - 1] = '\0';
-        printf("username: %s\npassword: %s\nrating: %d\n", cuser.username, cuser.password, cuser.rating);
-        write(fd, &cuser, sizeof(struct user));
-      }
-    }
-    */
-    
-
-    //while(read(sd, input, 1000)) {
-
-    //}
     return 0;
 }

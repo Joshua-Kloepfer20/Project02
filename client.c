@@ -26,7 +26,7 @@
 #define BLACKROOK 12
 
 struct user {char username[50]; char password[50]; int rating; int logged; };
-struct message {char username[50]; char messsage[50]; };
+struct move {int rcur; int ccur; int r; int c};
 struct piece {SDL_Surface * image; int type; int moves; /*for pawns*/ void (*movecheck)(struct square **, int, int, int **); };
 struct square {SDL_Rect rect; struct piece * cpiece; };
 
@@ -99,6 +99,7 @@ void RookMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
 
 void KnightMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {\
     int rcheck, ccheck;
+    memset(board, 0, sizeof(int) * 64);
     rcheck = r + 2;
     ccheck = c + 1;
     if (rcheck < 8 && ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEKNIGHT) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKKNIGHT))) {
@@ -160,8 +161,10 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     cpieces[5].image = SDL_LoadBMP("img/blackbishop.bmp");
     cpieces[6].type = BLACKKNIGHT;
     cpieces[6].image = SDL_LoadBMP("img/blackknight.bmp");
+    cpieces[6].movecheck = &KnightMoveCheck;
     cpieces[7].type = BLACKROOK;
     cpieces[7].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[7].movecheck = &RookMoveCheck;
     cpieces[8].type = BLACKPAWN;
     cpieces[8].image = SDL_LoadBMP("img/blackpawn.bmp");
     cpieces[9].type = BLACKPAWN;
@@ -196,8 +199,10 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     cpieces[23].image = SDL_LoadBMP("img/whitepawn.bmp");
     cpieces[24].type = WHITEROOK;
     cpieces[24].image = SDL_LoadBMP("img/whiterook.bmp");
+    cpieces[24].movecheck = &RookMoveCheck;
     cpieces[25].type = WHITEKNIGHT;
     cpieces[25].image = SDL_LoadBMP("img/whiteknight.bmp");
+    cpieces[25].movecheck = &KnightMoveCheck;
     cpieces[26].type = WHITEBISHOP;
     cpieces[26].image = SDL_LoadBMP("img/whitebishop.bmp");
     cpieces[27].type = WHITEQUEEN;
@@ -208,8 +213,10 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     cpieces[29].image = SDL_LoadBMP("img/whitebishop.bmp");
     cpieces[30].type = WHITEKNIGHT;
     cpieces[30].image = SDL_LoadBMP("img/whiteknight.bmp");
+    cpieces[30].movecheck = &KnightMoveCheck;
     cpieces[31].type = WHITEROOK;
     cpieces[31].image = SDL_LoadBMP("img/whiterook.bmp");
+    cpieces[31].movecheck = &RookMoveCheck;
     int r, c;
     for (r = 0; r < 2; r++) {
         for (c = 0; c < 8; c++) {
@@ -252,7 +259,11 @@ int main() {
     TTF_Font * font = TTF_OpenFont("./Roboto/Roboto-Medium.ttf", 25);
     SDL_Color color = {0, 0, 255};
     SDL_Surface * usertext, * passtext;
-    int w, h, r, c;
+    struct move cmove;
+    memset(cmove, 0, sizeof(cmove));
+    int w, h, r, c, rcur, ccur, side, valid;
+    rcur = -1;
+    ccur = -1;
     int quit = 0;
     int cw, ch;
     int logw, logh, regw, regh;
@@ -293,12 +304,32 @@ int main() {
                     if (cuser.logged == 1) {
                         for (r = 0; r < 8; r++) {
                             for (c = 0; c < 8; c++) {
-                                if (mouse_collision(event.button.x, event.button.y, gboard[r][c].rect)) {
+                                if (rcur == -1 && ccur == -1 && mouse_collision(event.button.x, event.button.y, gboard[r][c].rect)) {
                                     int i, z;
-                                    for (i = 0; i < 8; i++) {
-                                        for (z = 0; z < 8; z++) {
-                                            printf("move[%d][%d]: %d", i, z, board[i][z]);
-                                        }
+                                    gboard[r][c].cpiece->movecheck(gboard, r, c, board);
+                                    rcur = r;
+                                    ccur = c;
+//                                    for (i = 0; i < 8; i++) {
+//                                        for (z = 0; z < 8; z++) {
+//                                            printf("move[%d][%d]: %d\n", i, z, board[i][z]);
+//                                        }
+//                                    }
+                                }
+                                else if (board[r][c] == 1 && mouse_collision(event.button.x, event.button.y, gboard[r][c].rect)) {
+                                    cmove.rcur = rcur;
+                                    cmove.ccur = ccur;
+                                    cmove.r = r;
+                                    cmove.c = c;
+                                    write(sd, &cmove, sizeof(struct move));
+                                    read(sd, &valid, 4);
+                                    if (valid) {
+                                        gboard[r][c].cpiece = gboard[rcur][ccur].cpiece;
+                                        gboard[rcur][ccur].cpiece = NULL;
+                                        rcur = -1;
+                                        ccur = -1;
+                                    }
+                                    else {
+                                        printf("server says invalid move\n");
                                     }
                                 }
                             }
