@@ -141,6 +141,52 @@ void KnightMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) 
         board[rcheck][ccheck] = 1;
     }
 }
+void PawnMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
+    int rcheck, ccheck, side;
+    if (gboard[r][c].cpiece->type == BLACKPAWN) {
+        side = 0;
+        rcheck = r + 1;
+        ccheck = c;
+    }
+    else {
+        side = 1;
+        rcheck = r - 1;
+        ccheck = c;
+    }
+    if (gboard[r][c].cpiece->moves == 0) {
+        if (gboard[rcheck][ccheck].cpiece == NULL) {
+            board[rcheck][ccheck] = 1;
+        }
+        if (!side) {
+            rcheck++;
+        }
+        else {
+            rcheck--;
+        }
+        if (gboard[rcheck][ccheck].cpiece == NULL && ((rcheck == r + 2 && board[rcheck - 1][ccheck] == 1) || (rcheck == r - 2 && board[rcheck + 1][ccheck] == 1)) ) {
+            board[rcheck][ccheck] = 1;
+        }
+    }
+    else {
+        if (gboard[rcheck][ccheck].cpiece == NULL) {
+            board[rcheck][ccheck] = 1;
+        }
+    }
+    if (!side) {
+        rcheck = r + 1;
+        ccheck = c;
+    }
+    else {
+        rcheck = r - 1;
+        ccheck = c;
+    }
+    if ((ccheck + 1 < 8 && gboard[rcheck][ccheck + 1].cpiece != NULL && gboard[rcheck][ccheck + 1].cpiece->type >= 7 && side == 1) || (ccheck + 1 < 8 && gboard[rcheck][ccheck + 1].cpiece != NULL && gboard[rcheck][ccheck + 1].cpiece->type < 7 && side == 0)) {
+        board[rcheck][ccheck + 1] = 1;
+    }
+    if ((ccheck - 1 >= 0 && gboard[rcheck][ccheck  - 1].cpiece != NULL && gboard[rcheck][ccheck - 1].cpiece->type >= 7 && side == 1) || (ccheck - 1 >= 8 && gboard[rcheck][ccheck  - 1].cpiece && gboard[rcheck][ccheck - 1].cpiece->type < 7 && side == 0)) {
+        board[rcheck][ccheck - 1] = 1;
+    }
+}
 
 void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     memset(cpieces, 0, sizeof(struct piece) * 32);
@@ -230,6 +276,9 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     }
     for (r = 0; r < 32; r++) {
         cpieces[r].image = SDL_ConvertSurface(cpieces[r].image, cpieces[r].image->format, 0);
+        if (cpieces[r].type == WHITEPAWN || cpieces[r].type == BLACKPAWN) {
+            cpieces[r].movecheck = &PawnMoveCheck;
+        }
     }
 }
 
@@ -260,8 +309,9 @@ int main() {
     SDL_Color color = {0, 0, 255};
     SDL_Surface * usertext, * passtext;
     struct move cmove;
-    memset(cmove, 0, sizeof(cmove));
-    int w, h, r, c, rcur, ccur, side, valid;
+    memset(&cmove, 0, sizeof(cmove));
+    int w, h, r, c, rcur, ccur, side, valid, turn;
+    turn = 0;
     rcur = -1;
     ccur = -1;
     int quit = 0;
@@ -320,13 +370,15 @@ int main() {
                                     cmove.ccur = ccur;
                                     cmove.r = r;
                                     cmove.c = c;
-                                    write(sd, &cmove, sizeof(struct move));
-                                    read(sd, &valid, 4);
+                                    valid = 1;
+//                                    write(sd, &cmove, sizeof(struct move));
+//                                    read(sd, &valid, 4);
                                     if (valid) {
                                         gboard[r][c].cpiece = gboard[rcur][ccur].cpiece;
                                         gboard[rcur][ccur].cpiece = NULL;
                                         rcur = -1;
                                         ccur = -1;
+                                        gboard[r][c].cpiece->moves += 1;
                                     }
                                     else {
                                         printf("server says invalid move\n");

@@ -24,7 +24,7 @@
 #define BLACKROOK 12
 
 struct user {char username[50]; char password[50]; int rating; int logged; };
-struct move {int rcur; int ccur; int r; int c};
+struct move {int rcur; int ccur; int r; int c; };
 struct message {char username[50]; char messsage[50]; };
 struct board {int board[8][8]; int whitesd; int blacksd; };
 
@@ -120,9 +120,9 @@ int main() {
     FD_ZERO(&client);
     FD_SET(sd, &client);
     int i;
-    struct board cboard;
-    memset(&cboard, 0, sizeof(struct board));
-    boardsetup(cboard.board);
+    int numgames;
+    struct board * games = malloc(sizeof(struct board) * numgames);
+    memset(games, 0, sizeof(struct board) * numgames);
     //int test = 0;
     while (1) {
 
