@@ -26,7 +26,7 @@
 #define BLACKROOK 12
 
 struct user {char username[50]; char password[50]; int rating; int logged; };
-struct move {int rcur; int ccur; int r; int c};
+struct move {int rcur; int ccur; int r; int c; };
 struct piece {SDL_Surface * image; int type; int moves; /*for pawns*/ void (*movecheck)(struct square **, int, int, int **); };
 struct square {SDL_Rect rect; struct piece * cpiece; };
 
@@ -50,7 +50,7 @@ void RookMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
     if (r < 7) {
         rcheck = r + 1;
         ccheck = c;
-        while (rcheck < 8 && gboard[rcheck][ccheck].cpiece == NULL) {
+        while (rcheck < 8) {
             if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEROOK) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKROOK))) {
                 board[rcheck][ccheck] = 1;
                 break;
@@ -62,7 +62,7 @@ void RookMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
     if (r > 0) {
         rcheck = r - 1;
         ccheck = c;
-        while (rcheck >= 0 && gboard[rcheck][ccheck].cpiece == NULL) {
+        while (rcheck >= 0) {
             if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEROOK) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKROOK))) {
                 board[rcheck][ccheck] = 1;
                 break;
@@ -74,7 +74,7 @@ void RookMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
     if (c < 7) {
         rcheck = r;
         ccheck = c + 1;
-        while (ccheck < 8 && gboard[rcheck][ccheck].cpiece == NULL) {
+        while (ccheck < 8) {
             if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEROOK) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKROOK))) {
                 board[rcheck][ccheck] = 1;
                 break;
@@ -86,7 +86,7 @@ void RookMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
     if (c > 0) {
         rcheck = r;
         ccheck = c - 1;
-        while (ccheck >= 0 && gboard[rcheck][ccheck].cpiece == NULL) {
+        while (ccheck >= 0) {
             if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEROOK) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKROOK))) {
                 board[rcheck][ccheck] = 1;
                 break;
@@ -142,6 +142,7 @@ void KnightMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) 
     }
 }
 void PawnMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
+    memset(board, 0, sizeof(int) * 64);
     int rcheck, ccheck, side;
     if (gboard[r][c].cpiece->type == BLACKPAWN) {
         side = 0;
@@ -163,7 +164,7 @@ void PawnMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
         else {
             rcheck--;
         }
-        if (gboard[rcheck][ccheck].cpiece == NULL && ((rcheck == r + 2 && board[rcheck - 1][ccheck] == 1) || (rcheck == r - 2 && board[rcheck + 1][ccheck] == 1)) ) {
+        if (gboard[rcheck][ccheck].cpiece == NULL && ((side == 0 && board[rcheck - 1][ccheck] == 1) || (side == 1 && board[rcheck + 1][ccheck] == 1)) ) {
             board[rcheck][ccheck] = 1;
         }
     }
@@ -183,8 +184,181 @@ void PawnMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
     if ((ccheck + 1 < 8 && gboard[rcheck][ccheck + 1].cpiece != NULL && gboard[rcheck][ccheck + 1].cpiece->type >= 7 && side == 1) || (ccheck + 1 < 8 && gboard[rcheck][ccheck + 1].cpiece != NULL && gboard[rcheck][ccheck + 1].cpiece->type < 7 && side == 0)) {
         board[rcheck][ccheck + 1] = 1;
     }
-    if ((ccheck - 1 >= 0 && gboard[rcheck][ccheck  - 1].cpiece != NULL && gboard[rcheck][ccheck - 1].cpiece->type >= 7 && side == 1) || (ccheck - 1 >= 8 && gboard[rcheck][ccheck  - 1].cpiece && gboard[rcheck][ccheck - 1].cpiece->type < 7 && side == 0)) {
+    if ((ccheck - 1 >= 0 && gboard[rcheck][ccheck  - 1].cpiece != NULL && gboard[rcheck][ccheck - 1].cpiece->type >= 7 && side == 1) || (ccheck - 1 >= 0 && gboard[rcheck][ccheck  - 1].cpiece && gboard[rcheck][ccheck - 1].cpiece->type < 7 && side == 0)) {
         board[rcheck][ccheck - 1] = 1;
+    }
+/*    if (ccheck + 1 < 8 && gboard[r][ccheck + 1].cpiece != NULL && gboard[r][ccheck + 1].cpiece.type == BLACKPAWN && side == 1 && gboard[r][ccheck + 1].cpiece.moves == 1) {
+        board[rcheck][ccheck + 1] = 2;
+    }
+    if (ccheck - 1 >= 0 && gboard[r][ccheck - 1].cpiece != NULL && gboard[r][ccheck - 1].cpiece.type == BLACKPAWN && side == 1 && gboard[r][ccheck - 1].cpiece.moves == 1) {
+        board[rcheck][ccheck - 1] = 2;
+    }
+    if (ccheck + 1 < 8 && gboard[r][ccheck + 1].cpiece != NULL && gboard[r][ccheck + 1].cpiece.type == WHITEPAWN && side == 0 && gboard[r][ccheck + 1].cpiece.moves == 1) {
+        board[rcheck][ccheck + 1] = 2;
+    }
+    if (ccheck - 1 >= 0 && gboard[r][ccheck - 1].cpiece != NULL && gboard[r][ccheck - 1].cpiece.type == WHITEPAWN && side == 0 && gboard[r][ccheck - 1].cpiece.moves == 1) {
+        board[rcheck][ccheck - 1] = 2;
+    }
+*/
+}
+void BishopMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
+    int rcheck, ccheck;
+    memset(board, 0, sizeof(int) * 64);
+    if (r < 7 && c < 7) {
+        rcheck = r + 1;
+        ccheck = c + 1;
+        while (rcheck < 8 && ccheck < 8) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEBISHOP) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKBISHOP))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck++;
+            ccheck++;
+        }
+    }
+    if (r < 7 && c > 0) {
+        rcheck = r + 1;
+        ccheck = c - 1;
+        while (rcheck < 8 && ccheck >= 0) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEBISHOP) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKBISHOP))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck++;
+            ccheck--;
+        }
+    }
+    if (r > 0 && c < 7) {
+        rcheck = r - 1;
+        ccheck = c + 1;
+        while (rcheck >= 0 && ccheck < 8) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEBISHOP) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKBISHOP))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck--;
+            ccheck++;
+        }
+    }
+    if (r > 0 && c > 0) {
+        rcheck = r - 1;
+        ccheck = c - 1;
+        while (rcheck >= 0 && ccheck >= 0) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEQUEEN) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKQUEEN))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck--;
+            ccheck--;
+        }
+    }
+}
+void QueenMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
+    int rcheck, ccheck;
+    memset(board, 0, sizeof(int) * 64);
+    if (r < 7) {
+        rcheck = r + 1;
+        ccheck = c;
+        while (rcheck < 8) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEQUEEN) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKQUEEN))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck++;
+        }
+    }
+    if (r > 0) {
+        rcheck = r - 1;
+        ccheck = c;
+        while (rcheck >= 0) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEQUEEN) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKQUEEN))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck--;
+        }
+    }
+    if (c < 7) {
+        rcheck = r;
+        ccheck = c + 1;
+        while (ccheck < 8) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEQUEEN) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKQUEEN))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            ccheck++;
+        }
+    }
+    if (c > 0) {
+        rcheck = r;
+        ccheck = c - 1;
+        while (ccheck >= 0) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEQUEEN) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKQUEEN))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            ccheck--;
+        }
+    }
+    if (r < 7 && c < 7) {
+        rcheck = r + 1;
+        ccheck = c + 1;
+        while (rcheck < 8 && ccheck < 8) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEQUEEN) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKQUEEN))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck++;
+            ccheck++;
+        }
+    }
+    if (r < 7 && c > 0) {
+        rcheck = r + 1;
+        ccheck = c - 1;
+        while (rcheck < 8 && ccheck >= 0) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEQUEEN) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKQUEEN))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck++;
+            ccheck--;
+        }
+    }
+    if (r > 0 && c < 7) {
+        rcheck = r - 1;
+        ccheck = c + 1;
+        while (rcheck >= 0 && ccheck < 8) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEQUEEN) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKQUEEN))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck--;
+            ccheck++;
+        }
+    }
+    if (r > 0 && c > 0) {
+        rcheck = r - 1;
+        ccheck = c - 1;
+        while (rcheck >= 0 && ccheck >= 0) {
+            if (gboard[rcheck][ccheck].cpiece != NULL && ((gboard[rcheck][ccheck].cpiece->type >= 7 && gboard[r][c].cpiece->type == WHITEQUEEN) || (gboard[rcheck][ccheck].cpiece->type < 7 && gboard[r][c].cpiece->type == BLACKQUEEN))) {
+                board[rcheck][ccheck] = 1;
+                break;
+            }
+            board[rcheck][ccheck] = 1;
+            rcheck--;
+            ccheck--;
+        }
     }
 }
 
@@ -199,17 +373,20 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     cpieces[1].movecheck = &KnightMoveCheck;
     cpieces[2].type = BLACKBISHOP;
     cpieces[2].image = SDL_LoadBMP("img/blackbishop.bmp");
+    cpieces[2].movecheck = &BishopMoveCheck;
     cpieces[3].type = BLACKQUEEN;
     cpieces[3].image = SDL_LoadBMP("img/blackqueen.bmp");
+    cpieces[3].movecheck = &QueenMoveCheck;
     cpieces[4].type = BLACKKING;
     cpieces[4].image = SDL_LoadBMP("img/blackking.bmp");
     cpieces[5].type = BLACKBISHOP;
     cpieces[5].image = SDL_LoadBMP("img/blackbishop.bmp");
+    cpieces[5].movecheck = &BishopMoveCheck;
     cpieces[6].type = BLACKKNIGHT;
     cpieces[6].image = SDL_LoadBMP("img/blackknight.bmp");
     cpieces[6].movecheck = &KnightMoveCheck;
     cpieces[7].type = BLACKROOK;
-    cpieces[7].image = SDL_LoadBMP("img/blackpawn.bmp");
+    cpieces[7].image = SDL_LoadBMP("img/blackrook.bmp");
     cpieces[7].movecheck = &RookMoveCheck;
     cpieces[8].type = BLACKPAWN;
     cpieces[8].image = SDL_LoadBMP("img/blackpawn.bmp");
@@ -251,12 +428,15 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     cpieces[25].movecheck = &KnightMoveCheck;
     cpieces[26].type = WHITEBISHOP;
     cpieces[26].image = SDL_LoadBMP("img/whitebishop.bmp");
+    cpieces[26].movecheck = &BishopMoveCheck;
     cpieces[27].type = WHITEQUEEN;
     cpieces[27].image = SDL_LoadBMP("img/whitequeen.bmp");
+    cpieces[27].movecheck = &QueenMoveCheck;
     cpieces[28].type = WHITEKING;
     cpieces[28].image = SDL_LoadBMP("img/whiteking.bmp");
     cpieces[29].type = WHITEBISHOP;
     cpieces[29].image = SDL_LoadBMP("img/whitebishop.bmp");
+    cpieces[29].movecheck = &BishopMoveCheck;
     cpieces[30].type = WHITEKNIGHT;
     cpieces[30].image = SDL_LoadBMP("img/whiteknight.bmp");
     cpieces[30].movecheck = &KnightMoveCheck;
@@ -295,6 +475,7 @@ int main() {
     struct user cuser;
     memset(&cuser, 0, sizeof(struct user));
     struct square gboard[8][8];
+    char username[50];
     int board[8][8];
     struct piece cpieces[32];
     boardsetup(cpieces, gboard);
@@ -305,12 +486,15 @@ int main() {
     
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_Texture * texture, * texture2;
+    texture = NULL;
+    texture2 = NULL;
     TTF_Font * font = TTF_OpenFont("./Roboto/Roboto-Medium.ttf", 25);
     SDL_Color color = {0, 0, 255};
     SDL_Surface * usertext, * passtext;
     struct move cmove;
     memset(&cmove, 0, sizeof(cmove));
     int w, h, r, c, rcur, ccur, side, valid, turn;
+    side = 1;
     turn = 0;
     rcur = -1;
     ccur = -1;
@@ -344,6 +528,22 @@ int main() {
     while(!quit) {
         cw = w;
         ch = h;
+        if (turn == 0 && cuser.logged == 2) {
+            printf("waiting for move\n");
+            int bytes = read(sd, &cmove, sizeof(struct move));
+            printf("recieved move: %d\n", bytes);
+            if (cmove.rcur == -1) {
+                cuser.logged = 1;
+                boardsetup(cpieces, gboard);
+                continue;
+            }
+            gboard[cmove.r][cmove.c].cpiece = gboard[cmove.rcur][cmove.ccur].cpiece;
+            gboard[cmove.rcur][cmove.ccur].cpiece = NULL;
+            rcur = -1;
+            ccur = -1;
+            gboard[cmove.r][cmove.c].cpiece->moves += 1;
+            turn = 1;
+        }
         while(SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 quit = 1;
@@ -351,14 +551,20 @@ int main() {
             }
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    if (cuser.logged == 1) {
+                    if (cuser.logged == 2) {
                         for (r = 0; r < 8; r++) {
+                            if (cuser.logged == 1) {
+                                break;
+                            }
                             for (c = 0; c < 8; c++) {
                                 if (rcur == -1 && ccur == -1 && mouse_collision(event.button.x, event.button.y, gboard[r][c].rect)) {
-                                    int i, z;
-                                    gboard[r][c].cpiece->movecheck(gboard, r, c, board);
-                                    rcur = r;
-                                    ccur = c;
+//                                    int i, z;
+                                    if (gboard[r][c].cpiece != NULL && ((gboard[r][c].cpiece->type >= 7 && side == 0) || (gboard[r][c].cpiece->type < 7 && side == 1))) {
+                                        printf("selected\n");
+                                        gboard[r][c].cpiece->movecheck(gboard, r, c, board);
+                                        rcur = r;
+                                        ccur = c;
+                                    }
 //                                    for (i = 0; i < 8; i++) {
 //                                        for (z = 0; z < 8; z++) {
 //                                            printf("move[%d][%d]: %d\n", i, z, board[i][z]);
@@ -366,6 +572,28 @@ int main() {
 //                                    }
                                 }
                                 else if (board[r][c] == 1 && mouse_collision(event.button.x, event.button.y, gboard[r][c].rect)) {
+                                    if (turn == 1) {
+                                        cmove.rcur = rcur;
+                                        cmove.ccur = ccur;
+                                        cmove.r = r;
+                                        cmove.c = c;
+                                        valid = 1;
+                                        printf("sending move\n");
+                                        write(sd, &cmove, sizeof(struct move));
+                                        if (valid) {
+                                            gboard[r][c].cpiece = gboard[rcur][ccur].cpiece;
+                                            gboard[rcur][ccur].cpiece = NULL;
+                                            rcur = -1;
+                                            ccur = -1;
+                                            gboard[r][c].cpiece->moves += 1;
+                                        }
+                                        else {
+                                            printf("server says invalid move\n");
+                                        }
+                                        turn = 0;
+                                    }
+                                }
+/*                                else if (board[r][c] == 2 && && mouse_collision(event.button.x, event.button.y, gboard[r][c].rect)) {
                                     cmove.rcur = rcur;
                                     cmove.ccur = ccur;
                                     cmove.r = r;
@@ -383,8 +611,26 @@ int main() {
                                     else {
                                         printf("server says invalid move\n");
                                     }
+                                }*/
+                                else if (mouse_collision(event.button.x, event.button.y, gboard[r][c].rect) && gboard[r][c].cpiece != NULL && ((gboard[r][c].cpiece >= 7 && side == 0) || (gboard[r][c].cpiece < 7 && side == 1))) {
+                                    gboard[r][c].cpiece->movecheck(gboard, r, c, board);
+                                    rcur = r;
+                                    ccur = c;
+                                    printf("selected\n");
                                 }
                             }
+                        }
+                    }
+                    else if (cuser.logged == 1 && mouse_collision(event.button.x, event.button.y, loginbut)) {
+                        printf("joining queue\n");
+                        write(sd, "queue", 6);
+                        read(sd, &side, 4);
+                        cuser.logged = 2;
+                        if (side == 1) {
+                            turn = 1;
+                        }
+                        else {
+                            turn = 0;
                         }
                     }
                     else {
@@ -424,7 +670,7 @@ int main() {
                 //printf("released\n");
             }
             if (event.type == SDL_TEXTINPUT || event.type == SDL_KEYDOWN) {
-                printf("key: %s\n", event.text.text);
+//                printf("key: %s\n", event.text.text);
                     if (cuser.logged == 0 || cuser.logged == -1) {
                         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
                             printf("login\n");
@@ -465,14 +711,22 @@ int main() {
         //printf("w: %d, h: %d\n", rect.w, rect.h);
         //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         //SDL_RenderClear(renderer);
-        if (cuser.logged == 1) {
+        if (cuser.logged == 2) {
             if (cw != w || ch != h || clock() - before >= 50) {
                 for (r = 0; r < 8; r++) {
                     for (c = 0; c < 8; c++) {
-                        gboard[r][c].rect.x = c*w/8;
-                        gboard[r][c].rect.y = r*h/8;
-                        gboard[r][c].rect.w = w/8;
-                        gboard[r][c].rect.h = h/8;
+                        if (side == 0) {
+                            gboard[r][c].rect.x = (7 - c)*w/8;
+                            gboard[r][c].rect.y = (7 - r)*h/8;
+                            gboard[r][c].rect.w = w/8;
+                            gboard[r][c].rect.h = h/8;
+                        }
+                        else if (side == 1) {
+                            gboard[r][c].rect.x = c*w/8;
+                            gboard[r][c].rect.y = r*h/8;
+                            gboard[r][c].rect.w = w/8;
+                            gboard[r][c].rect.h = h/8;
+                        }
                         if ((r + c) % 2 == 0) {
                             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
                         }
@@ -481,57 +735,11 @@ int main() {
                         }
                         SDL_RenderFillRect(renderer, &(gboard[r][c].rect));
                         if (gboard[r][c].cpiece != NULL) {
-                            switch (gboard[r][c].cpiece->type) {
-                                case WHITEKING:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case WHITEQUEEN:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case WHITEBISHOP:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case WHITEKNIGHT:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case WHITEROOK:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case WHITEPAWN:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case BLACKKING:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case BLACKQUEEN:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case BLACKBISHOP:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case BLACKKNIGHT:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case BLACKROOK:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                                case BLACKPAWN:
-                                    texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
-                                    SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
-                                    break;
-                            }
+                            if (texture != NULL) SDL_DestroyTexture(texture);
+                            texture = SDL_CreateTextureFromSurface(renderer, gboard[r][c].cpiece->image);
+                            SDL_RenderCopy(renderer, texture, NULL, &(gboard[r][c].rect));
                         }
+
                     }
                 }
                 before = clock();
@@ -539,16 +747,31 @@ int main() {
 
             }
         }
+        else if (cuser.logged == 1) {
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderClear(renderer);
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            loginbut.x = w / 4 - loginbut.w;
+            usertext = TTF_RenderText_Solid(font, "queue", color);
+            if (texture != NULL) SDL_DestroyTexture(texture);
+            texture = SDL_CreateTextureFromSurface(renderer, usertext);
+            SDL_RenderFillRect(renderer, &loginbut);
+            SDL_RenderCopy(renderer, texture, NULL, &loginbut);
+
+            SDL_RenderPresent(renderer);
+        }
         else {
             //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             //SDL_RenderClear(renderer);
             usertext = TTF_RenderText_Solid(font, cuser.username, color);
             passtext = TTF_RenderText_Solid(font, cuser.password, color);
+            if (texture != NULL) SDL_DestroyTexture(texture);
+            if (texture2 != NULL) SDL_DestroyTexture(texture2);
             texture = SDL_CreateTextureFromSurface(renderer, usertext);
             texture2 = SDL_CreateTextureFromSurface(renderer, passtext);
             SDL_QueryTexture(texture, NULL, NULL, &logw, &logh);
             SDL_QueryTexture(texture2, NULL, NULL, &regw, &regh);
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
             passwordRect.w = w;
             usernameRect.w = w;
             SDL_RenderFillRect(renderer, &usernameRect);
@@ -568,6 +791,8 @@ int main() {
             loginbut.x = w / 4 - loginbut.w;
             usertext = TTF_RenderText_Solid(font, "login", color);
             passtext = TTF_RenderText_Solid(font, "register", color);
+            if (texture != NULL) SDL_DestroyTexture(texture);
+            if (texture2 != NULL) SDL_DestroyTexture(texture2);
             texture = SDL_CreateTextureFromSurface(renderer, usertext);
             texture2 = SDL_CreateTextureFromSurface(renderer, passtext);
             SDL_RenderFillRect(renderer, &loginbut);
