@@ -1,0 +1,12 @@
+Jan 12, coppied network code
+Jan 13, log in
+Jan 14, began working with SDL
+Jan 15, switched to using select for server and board + one piee
+Jan 16, board setup started converting login to gui
+Jan 17, finalized login gui
+Jan 18, chess board works with images + clean directory
+Jan 19, backspace and tab in typing also changed how pieces were organized
+Jan 20, rook movement
+Jan 21, more pieces
+Jan 22-23, all pieces but king can move and clients can play against eachother
+Jan 24, check + checkmate
