@@ -796,11 +796,13 @@ int main() {
                       write(games[z].black, &cmove, sizeof(struct move));
                       games[z].active = 0;
                       cusers[games[z].black].logged = 1;
+                      cusers[games[z].white].logged = 1;
                     }
                     else if (cmove.check == 0) {
                       games[z].board[cmove.r][cmove.c] = games[z].board[cmove.rcur][cmove.ccur];
                       games[z].board[cmove.rcur][cmove.ccur] = 0;
                       printf("valid move done\n");
+                      valid = 1;
                       write(games[z].white, &valid, 4);
                       write(games[z].black, &cmove, sizeof(struct move));
                     }
@@ -827,11 +829,13 @@ int main() {
                       write(games[z].white, &cmove, sizeof(struct move));
                       games[z].active = 0;
                       cusers[games[z].white].logged = 1;
+                      cusers[games[z].black].logged = 1;
                     }
                     else if (cmove.check == 0) {
                       games[z].board[cmove.r][cmove.c] = games[z].board[cmove.rcur][cmove.ccur];
                       games[z].board[cmove.rcur][cmove.ccur] = 0;
                       printf("valid move done\n");
+                      valid = 1;
                       write(games[z].black, &valid, 4);
                       write(games[z].white, &cmove, sizeof(struct move));
                     }
