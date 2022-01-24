@@ -388,42 +388,42 @@ int ifattack(int boardcheck[8][8], int side, int r, int c) {
     }
     rcheck = r + 2;
     ccheck = c + 1;
-    if (boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
+    if (rcheck < 8 && ccheck < 8 && boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
       return 1;
     }
     rcheck = r + 2;
     ccheck = c - 1;
-    if (boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
+    if (rcheck < 8 && ccheck >= 0 && boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
       return 1;
     }
     rcheck = r - 2;
     ccheck = c + 1;
-    if (boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
+    if (rcheck >= 0 && ccheck < 8 && boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
       return 1;
     }
     rcheck = r - 2;
     ccheck = c - 1;
-    if (boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
+    if (rcheck >= 0 && ccheck >= 0 && boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
       return 1;
     }
     rcheck = r + 1;
     ccheck = c + 2;
-    if (boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
+    if (rcheck < 8 && ccheck < 8 && boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
       return 1;
     }
     rcheck = r + 1;
     ccheck = c - 2;
-    if (boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
+    if (rcheck < 8 && ccheck >= 0 && boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
       return 1;
     }
     rcheck = r - 1;
     ccheck = c + 2;
-    if (boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
+    if (rcheck >= 0 && ccheck < 8 && boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
       return 1;
     }
     rcheck = r - 1;
     ccheck = c - 2;
-    if (boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
+    if (rcheck >= 0 && ccheck >= 0 && boardcheck[rcheck][ccheck] == WHITEKNIGHT) {
       return 1;
     }
     return 0;

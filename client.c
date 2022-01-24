@@ -361,6 +361,417 @@ void QueenMoveCheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
         }
     }
 }
+void KingMovecheck(struct square gboard[8][8], int r, int c, int board[8][8]) {
+    int rcheck, ccheck;
+    memset(board, 0, sizeof(int) * 64);
+    int side = gboard[r][c].cpiece != NULL && gboard[8][8].cpiece->type < 7;
+    if (side == 1) {
+    rcheck = r - 1;
+    ccheck = c - 1;
+    if (rcheck >= 0 && ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type >= 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c + 1;
+    if (rcheck >= 0 && ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type >= 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c;
+    if (rcheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type >= 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r;
+    ccheck = c - 1;
+    if (ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type >= 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r;
+    ccheck = c + 1;
+    if (ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type >= 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c - 1;
+    if (rcheck < 8 && ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type >= 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c + 1;
+    if (rcheck < 8 && ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type >= 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c;
+    if (rcheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type >= 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+  }
+  else {
+    rcheck = r - 1;
+    ccheck = c - 1;
+    if (rcheck >= 0 && ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type < 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c + 1;
+    if (rcheck >= 0 && ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type < 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c;
+    if (rcheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type < 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r;
+    ccheck = c - 1;
+    if (ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type < 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r;
+    ccheck = c + 1;
+    if (ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type < 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c - 1;
+    if (rcheck < 8 && ccheck >= 0 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type < 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c + 1;
+    if (rcheck < 8 && ccheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type < 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c;
+    if (rcheck < 8 && (gboard[rcheck][ccheck].cpiece == NULL || (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type < 7)) && !ifattack(gboard, rcheck, ccheck)) {
+      board[rcheck][ccheck] = 1;
+    }
+  }
+}
+int ifattack(struct square gboard[8][8], int r, int c) {
+    int side = gboard[r][c].cpiece != NULL && gboard[8][8].cpiece->type < 7;
+    int rcheck, ccheck;
+    if (side == 1) {
+        rcheck = r - 1;
+        ccheck = c + 1;
+        if (rcheck >= 0 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKPAWN || gboard[rcheck][ccheck].cpiece->type == BLACKKING)) {
+        return 1;
+        }
+        while (rcheck >= 0 && ccheck < 8) {
+        if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != BLACKQUEEN && gboard[rcheck][ccheck].cpiece->type != BLACKBISHOP) {
+            break;
+        }
+        else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKQUEEN || gboard[rcheck][ccheck].cpiece->type == BLACKBISHOP)) {
+            return 1;
+        }
+        rcheck--;
+        ccheck++;
+        }
+        rcheck = r - 1;
+        ccheck = c - 1;
+        if (rcheck >= 0 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKPAWN || gboard[rcheck][ccheck].cpiece->type == BLACKKING)) {
+        return 1;
+        }
+        while (rcheck >= 0 && ccheck >=0) {
+        if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != BLACKQUEEN && gboard[rcheck][ccheck].cpiece->type != BLACKBISHOP) {
+            break;
+        }
+        else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKQUEEN || gboard[rcheck][ccheck].cpiece->type == BLACKBISHOP)) {
+            return 1;
+        }
+        rcheck--;
+        ccheck--;
+        }
+        rcheck = r + 1;
+        ccheck = c + 1;
+        if (rcheck < 8 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKKING)) {
+        return 1;
+        }
+        while (rcheck < 8 && ccheck < 8) {
+        if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != BLACKQUEEN && gboard[rcheck][ccheck].cpiece->type != BLACKBISHOP) {
+            break;
+        }
+        else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKQUEEN || gboard[rcheck][ccheck].cpiece->type == BLACKBISHOP)) {
+            return 1;
+        }
+        rcheck++;
+        ccheck++;
+        }
+        rcheck = r + 1;
+        ccheck = c - 1;
+        if (rcheck < 8 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKKING)) {
+        return 1;
+        }
+        while (rcheck < 8 && ccheck >= 0) {
+        if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != BLACKQUEEN && gboard[rcheck][ccheck].cpiece->type != BLACKBISHOP) {
+            break;
+        }
+        else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKQUEEN || gboard[rcheck][ccheck].cpiece->type == BLACKBISHOP)) {
+            return 1;
+        }
+        rcheck++;
+        ccheck--;
+        }
+        rcheck = r + 1;
+        ccheck = c;
+        if (rcheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKKING)) {
+        return 1;
+        }
+        while (rcheck < 8) {
+        if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != BLACKQUEEN && gboard[rcheck][ccheck].cpiece->type != BLACKROOK) {
+            break;
+        }
+        else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKQUEEN || gboard[rcheck][ccheck].cpiece->type == BLACKROOK)) {
+            return 1;
+        }
+        rcheck++;
+        }
+        rcheck = r - 1;
+        ccheck = c;
+        if (rcheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKING) {
+        return 1;
+        }
+        while (rcheck >= 8) {
+        if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != BLACKQUEEN && gboard[rcheck][ccheck].cpiece->type != BLACKROOK) {
+            break;
+        }
+        else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKQUEEN || gboard[rcheck][ccheck].cpiece->type == BLACKROOK)) {
+            return 1;
+        }
+        rcheck--;
+        }
+        rcheck = r;
+        ccheck = c + 1;
+        if (ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKING) {
+        return 1;
+        }
+        while (ccheck < 8) {
+        if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != BLACKQUEEN && gboard[rcheck][ccheck].cpiece->type != BLACKROOK) {
+            break;
+        }
+        else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKQUEEN || gboard[rcheck][ccheck].cpiece->type == BLACKROOK)) {
+            return 1;
+        }
+        ccheck++;
+        }
+        rcheck = r;
+        ccheck = c - 1;
+        if (ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKING) {
+        return 1;
+        }
+        while (ccheck >= 0) {
+        if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != BLACKQUEEN && gboard[rcheck][ccheck].cpiece->type != BLACKROOK) {
+            break;
+        }
+        else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == BLACKQUEEN || gboard[rcheck][ccheck].cpiece->type == BLACKROOK)) {
+            return 1;
+        }
+        ccheck--;
+        }
+        rcheck = r + 2;
+        ccheck = c + 1;
+        if (rcheck < 8 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKNIGHT) {
+        return 1;
+        }
+        rcheck = r + 2;
+        ccheck = c - 1;
+        if (rcheck < 8 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKNIGHT) {
+        return 1;
+        }
+        rcheck = r - 2;
+        ccheck = c + 1;
+        if (rcheck >= 0 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKNIGHT) {
+        return 1;
+        }
+        rcheck = r - 2;
+        ccheck = c - 1;
+        if (rcheck >= 0 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKNIGHT) {
+        return 1;
+        }
+        rcheck = r + 1;
+        ccheck = c + 2;
+        if (rcheck < 8 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKNIGHT) {
+        return 1;
+        }
+        rcheck = r + 1;
+        ccheck = c - 2;
+        if (rcheck < 8 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKNIGHT) {
+        return 1;
+        }
+        rcheck = r - 1;
+        ccheck = c + 2;
+        if (rcheck >= 0 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKNIGHT) {
+        return 1;
+        }
+        rcheck = r - 1;
+        ccheck = c - 2;
+        if (rcheck >= 0 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == BLACKKNIGHT) {
+        return 1;
+        }
+        return 0;
+  }
+  else {
+    rcheck = r - 1;
+    ccheck = c + 1;
+    if (rcheck >= 0 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEPAWN || gboard[rcheck][ccheck].cpiece->type == WHITEKING)) {
+      return 1;
+    }
+    while (rcheck >= 0 && ccheck < 8) {
+      if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != WHITEQUEEN && gboard[rcheck][ccheck].cpiece->type != WHITEBISHOP) {
+        break;
+      }
+      else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEQUEEN || gboard[rcheck][ccheck].cpiece->type == WHITEBISHOP)) {
+        return 1;
+      }
+      rcheck--;
+      ccheck++;
+    }
+    rcheck = r - 1;
+    ccheck = c - 1;
+    if (rcheck >= 0 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEPAWN || gboard[rcheck][ccheck].cpiece->type == WHITEKING)) {
+      return 1;
+    }
+    while (rcheck >= 0 && ccheck >=0) {
+      if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != WHITEQUEEN && gboard[rcheck][ccheck].cpiece->type != WHITEBISHOP) {
+        break;
+      }
+      else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEQUEEN || gboard[rcheck][ccheck].cpiece->type == WHITEBISHOP)) {
+        return 1;
+      }
+      rcheck--;
+      ccheck--;
+    }
+    rcheck = r + 1;
+    ccheck = c + 1;
+    if (rcheck < 8 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEKING)) {
+      return 1;
+    }
+    while (rcheck < 8 && ccheck < 8) {
+      if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != WHITEQUEEN && gboard[rcheck][ccheck].cpiece->type != WHITEBISHOP) {
+        break;
+      }
+      else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEQUEEN || gboard[rcheck][ccheck].cpiece->type == WHITEBISHOP)) {
+        return 1;
+      }
+      rcheck++;
+      ccheck++;
+    }
+    rcheck = r + 1;
+    ccheck = c - 1;
+    if (rcheck < 8 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEKING)) {
+      return 1;
+    }
+    while (rcheck < 8 && ccheck >= 0) {
+      if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != WHITEQUEEN && gboard[rcheck][ccheck].cpiece->type != WHITEBISHOP) {
+        break;
+      }
+      else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEQUEEN || gboard[rcheck][ccheck].cpiece->type == WHITEBISHOP)) {
+        return 1;
+      }
+      rcheck++;
+      ccheck--;
+    }
+    rcheck = r + 1;
+    ccheck = c;
+    if (rcheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEKING)) {
+      return 1;
+    }
+    while (rcheck < 8) {
+      if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != WHITEQUEEN && gboard[rcheck][ccheck].cpiece->type != WHITEROOK) {
+        break;
+      }
+      else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEQUEEN || gboard[rcheck][ccheck].cpiece->type == WHITEROOK)) {
+        return 1;
+      }
+      rcheck++;
+    }
+    rcheck = r - 1;
+    ccheck = c;
+    if (rcheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKING) {
+      return 1;
+    }
+    while (rcheck >= 8) {
+      if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != WHITEQUEEN && gboard[rcheck][ccheck].cpiece->type != WHITEROOK) {
+        break;
+      }
+      else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEQUEEN || gboard[rcheck][ccheck].cpiece->type == WHITEROOK)) {
+        return 1;
+      }
+      rcheck--;
+    }
+    rcheck = r;
+    ccheck = c + 1;
+    if (ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKING) {
+      return 1;
+    }
+    while (ccheck < 8) {
+      if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != WHITEQUEEN && gboard[rcheck][ccheck].cpiece->type != WHITEROOK) {
+        break;
+      }
+      else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEQUEEN || gboard[rcheck][ccheck].cpiece->type == WHITEROOK)) {
+        return 1;
+      }
+      ccheck++;
+    }
+    rcheck = r;
+    ccheck = c - 1;
+    if (ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKING) {
+      return 1;
+    }
+    while (ccheck >= 0) {
+      if (gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type != WHITEQUEEN && gboard[rcheck][ccheck].cpiece->type != WHITEROOK) {
+        break;
+      }
+      else if (gboard[rcheck][ccheck].cpiece != NULL && (gboard[rcheck][ccheck].cpiece->type == WHITEQUEEN || gboard[rcheck][ccheck].cpiece->type == WHITEROOK)) {
+        return 1;
+      }
+      ccheck--;
+    }
+    rcheck = r + 2;
+    ccheck = c + 1;
+    if (rcheck < 8 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKNIGHT) {
+      return 1;
+    }
+    rcheck = r + 2;
+    ccheck = c - 1;
+    if (rcheck < 8 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKNIGHT) {
+      return 1;
+    }
+    rcheck = r - 2;
+    ccheck = c + 1;
+    if (rcheck >= 0 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKNIGHT) {
+      return 1;
+    }
+    rcheck = r - 2;
+    ccheck = c - 1;
+    if (rcheck >= 0 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKNIGHT) {
+      return 1;
+    }
+    rcheck = r + 1;
+    ccheck = c + 2;
+    if (rcheck < 8 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKNIGHT) {
+      return 1;
+    }
+    rcheck = r + 1;
+    ccheck = c - 2;
+    if (rcheck < 8 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKNIGHT) {
+      return 1;
+    }
+    rcheck = r - 1;
+    ccheck = c + 2;
+    if (rcheck >= 0 && ccheck < 8 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKNIGHT) {
+      return 1;
+    }
+    rcheck = r - 1;
+    ccheck = c - 2;
+    if (rcheck >= 0 && ccheck >= 0 && gboard[rcheck][ccheck].cpiece != NULL && gboard[rcheck][ccheck].cpiece->type == WHITEKNIGHT) {
+      return 1;
+    }
+    return 0;
+  }
+}
 
 void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     memset(cpieces, 0, sizeof(struct piece) * 32);
@@ -379,6 +790,7 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     cpieces[3].movecheck = &QueenMoveCheck;
     cpieces[4].type = BLACKKING;
     cpieces[4].image = SDL_LoadBMP("img/blackking.bmp");
+    cpieces[4].movecheck = &KingMovecheck;
     cpieces[5].type = BLACKBISHOP;
     cpieces[5].image = SDL_LoadBMP("img/blackbishop.bmp");
     cpieces[5].movecheck = &BishopMoveCheck;
@@ -434,6 +846,7 @@ void boardsetup(struct piece cpieces[32], struct square gboard[8][8]) {
     cpieces[27].movecheck = &QueenMoveCheck;
     cpieces[28].type = WHITEKING;
     cpieces[28].image = SDL_LoadBMP("img/whiteking.bmp");
+    cpieces[28].movecheck = &KingMovecheck;
     cpieces[29].type = WHITEBISHOP;
     cpieces[29].image = SDL_LoadBMP("img/whitebishop.bmp");
     cpieces[29].movecheck = &BishopMoveCheck;
@@ -633,7 +1046,7 @@ int main() {
                                         printf("server says invalid move\n");
                                     }
                                 }*/
-                                else if (mouse_collision(event.button.x, event.button.y, gboard[r][c].rect) && gboard[r][c].cpiece != NULL && ((gboard[r][c].cpiece >= 7 && side == 0) || (gboard[r][c].cpiece < 7 && side == 1))) {
+                                else if (mouse_collision(event.button.x, event.button.y, gboard[r][c].rect) && gboard[r][c].cpiece != NULL && ((gboard[r][c].cpiece->type >= 7 && side == 0) || (gboard[r][c].cpiece->type < 7 && side == 1))) {
                                     gboard[r][c].cpiece->movecheck(gboard, r, c, board);
                                     rcur = r;
                                     ccur = c;
