@@ -26,7 +26,7 @@
 #define BLACKROOK 12
 
 struct user {char username[50]; char password[50]; int rating; int logged; };
-struct move {int rcur; int ccur; int r; int c; };
+struct move {int rcur; int ccur; int r; int c; int check; };
 struct piece {SDL_Surface * image; int type; int moves; /*for pawns*/ void (*movecheck)(struct square **, int, int, int **); };
 struct square {SDL_Rect rect; struct piece * cpiece; };
 
@@ -537,6 +537,24 @@ int main() {
                 boardsetup(cpieces, gboard);
                 continue;
             }
+            else if (cmove.check == 1) {
+                rcur = -1;
+                ccur = -1;
+                printf("cannot make this move you are in check");
+                continue;
+            }
+            else if (cmove.check == 2) {
+                cuser.logged = 1;
+                boardsetup(cpieces, gboard);
+                printf("YOU LOST\n");
+                continue;
+            }
+            else if (cmove.check == 3) {
+                cuser.logged = 1;
+                boardsetup(cpieces, gboard);
+                printf("YOU WON");
+                continue;
+            }
             gboard[cmove.r][cmove.c].cpiece = gboard[cmove.rcur][cmove.ccur].cpiece;
             gboard[cmove.rcur][cmove.ccur].cpiece = NULL;
             rcur = -1;
@@ -580,6 +598,9 @@ int main() {
                                         valid = 1;
                                         printf("sending move\n");
                                         write(sd, &cmove, sizeof(struct move));
+                                        printf("waiting for validation\n");
+                                        read(sd, &valid, 4);
+                                        printf("valid: %d\n");
                                         if (valid) {
                                             gboard[r][c].cpiece = gboard[rcur][ccur].cpiece;
                                             gboard[rcur][ccur].cpiece = NULL;
