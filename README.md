@@ -29,5 +29,6 @@
   - castling makes no sense and is completely random.  Why is it in the game?
   - Drawing.  We go for either win or loss no draws
   - En passant.  While this makes more sense than castling it still makes very little sense.
-  - Resigning.  Similar to drawing we do not accept cowards.  
+  - Resigning.  Similar to drawing we do not accept cowards.
+- For upgrading pawns after you click the move press 1 for rook, 2 for bishop, 3 for knight, and 4 for queen  
 - Other than that it is played like a normal game and once the game ends you will be brought back to the queue screen if you would like to queue up again
