@@ -12,7 +12,7 @@
 ## how to use
 - make
 - ./server
-- ./client
+- ./client "ip of server"
 ## intructions
 - server there is nothing to do other than run
 - client will open with 2 blank white boxes

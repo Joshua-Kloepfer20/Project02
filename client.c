@@ -30,14 +30,19 @@ struct move {int rcur; int ccur; int r; int c; int check; };
 struct piece {SDL_Surface * image; int type; int moves; /*for pawns*/ void (*movecheck)(struct square **, int, int, int **); };
 struct square {SDL_Rect rect; struct piece * cpiece; };
 
-int client_handshake() {
+int client_handshake(char * ip) {
   struct addrinfo * hints;
   struct addrinfo * results;
   hints = calloc(1, sizeof(struct addrinfo));
   hints->ai_family = AF_INET;
   hints->ai_socktype = SOCK_STREAM;
   hints->ai_flags = AI_PASSIVE;
-  getaddrinfo(NULL, "1119", hints, &results);
+  if (strcmp(ip, "") == 0) {
+    getaddrinfo(NULL, "1119", hints, &results);
+  }
+  else {
+    getaddrinfo(ip, "1119", hints, &results);
+  }
   int sd = socket(results->ai_family, results->ai_socktype, 0);
   connect(sd, results->ai_addr, results->ai_addrlen);
   printf("connected\n");
@@ -640,8 +645,15 @@ int mouse_collision(int x, int y, SDL_Rect rect) {
     return x > rect.x && x < rect.x + rect.w && y > rect.y && y < rect.y + rect.h;
 }
 
-int main() {
-    int sd = client_handshake();
+int main(int argc, char ** argv) {
+    char * ip;
+    if (argc == 2) {
+      ip = argv[1];
+    }
+    else {
+      ip = "";
+    }
+    int sd = client_handshake(ip);
 //    int loginc = 0;
     const int WIDTH = 640;
     const int HEIGHT = 480;
