@@ -1,4 +1,4 @@
-# ChessOnline
+# ChessOnline - the right way
 
 ## Members: Joshua Kloepfer - pd 5
 
@@ -25,10 +25,9 @@
 - if clicked client will join the queue
 - will print in terminal joined queue
 - if there is another player in the queue you will be put into a game with them
-- Than make moves - did not have time to complete some
-  - king cannot move
-  - no castle
-  - no En Passant
-  - no upgrading pawns
-- When checkmate occurs both clients will go back to the queue screen and it will print in terminal the result of the ame
-- If one client dc the other will return to queue screen
+- Than make moves - But some chess rules do not apply here
+  - castling makes no sense and is completely random.  Why is it in the game?
+  - Drawing.  We go for either win or loss no draws
+  - En passant.  While this makes more sense than castling it still makes very little sense.
+  - Resigning.  Similar to drawing we do not accept cowards.  
+- Other than that it is played like a normal game and once the game ends you will be brough back to the queue screen if you would like to queue up again
