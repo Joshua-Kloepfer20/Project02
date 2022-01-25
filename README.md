@@ -30,4 +30,4 @@
   - Drawing.  We go for either win or loss no draws
   - En passant.  While this makes more sense than castling it still makes very little sense.
   - Resigning.  Similar to drawing we do not accept cowards.  
-- Other than that it is played like a normal game and once the game ends you will be brough back to the queue screen if you would like to queue up again
+- Other than that it is played like a normal game and once the game ends you will be brought back to the queue screen if you would like to queue up again
