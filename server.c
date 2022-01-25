@@ -789,7 +789,7 @@ void KnightMoveCheck(int boardcheck[8][8], int side, int moveable[8][8], int r, 
     }
     rcheck = r - 1;
     ccheck = c + 2;
-    if (rcheck < 8 && ccheck >= 0 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
+    if (rcheck >= 0 && ccheck < 8 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
       moveable[rcheck][ccheck] = 1;
     }
     rcheck = r - 1;
