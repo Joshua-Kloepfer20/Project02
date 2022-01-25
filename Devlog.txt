@@ -9,4 +9,4 @@ Jan 19, backspace and tab in typing also changed how pieces were organized
 Jan 20, rook movement
 Jan 21, more pieces
 Jan 22-23, all pieces but king can move and clients can play against eachother
-Jan 24, check + checkmate
+Jan 24, check + checkmate, king can move, pieces cant jump over, pawns can upgrade
