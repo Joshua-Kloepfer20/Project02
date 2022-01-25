@@ -37,7 +37,7 @@ int client_handshake() {
   hints->ai_family = AF_INET;
   hints->ai_socktype = SOCK_STREAM;
   hints->ai_flags = AI_PASSIVE;
-  getaddrinfo("149.89.150.106", "1119", hints, &results);
+  getaddrinfo(NULL, "1119", hints, &results);
   int sd = socket(results->ai_family, results->ai_socktype, 0);
   connect(sd, results->ai_addr, results->ai_addrlen);
   printf("connected\n");
