@@ -533,8 +533,8 @@ void PawnMoveCheck(int boardcheck[8][8], int side, int moveable[8][8], int r, in
     if (boardcheck[rcheck][ccheck] == 0) {
       moveable[rcheck][ccheck] = 1;
     }
-    if (r == 6 && movecheck[rcheck][ccheck] == 1 && boardcheck[rcheck - 1][ccheck] == 0) {
-      moveable[rcheck - 1][ccheck] = 1
+    if (r == 6 && boardcheck[rcheck][ccheck] == 1 && boardcheck[rcheck - 1][ccheck] == 0) {
+      moveable[rcheck - 1][ccheck] = 1;
     }
     if (ccheck < 7 && boardcheck[rcheck][ccheck + 1] >= 7) {
       moveable[rcheck][ccheck + 1] = 1;
@@ -549,8 +549,8 @@ void PawnMoveCheck(int boardcheck[8][8], int side, int moveable[8][8], int r, in
     if (boardcheck[rcheck][ccheck] == 0) {
       moveable[rcheck][ccheck] = 1;
     }
-    if (r == 1 && movecheck[rcheck][ccheck] == 1 && boardcheck[rcheck + 1][ccheck] == 0) {
-      moveable[rcheck + 1][ccheck] = 1
+    if (r == 1 && boardcheck[rcheck][ccheck] == 1 && boardcheck[rcheck + 1][ccheck] == 0) {
+      moveable[rcheck + 1][ccheck] = 1;
     }
     if (ccheck < 7 && boardcheck[rcheck][ccheck + 1] < 7) {
       moveable[rcheck][ccheck + 1] = 1;
