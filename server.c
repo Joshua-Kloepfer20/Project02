@@ -190,7 +190,7 @@ int ifattack(int boardcheck[8][8], int side, int r, int c) {
     if (rcheck >= 0 && boardcheck[rcheck][ccheck] == BLACKKING) {
       return 1;
     }
-    while (rcheck >= 8) {
+    while (rcheck >= 0) {
       if (boardcheck[rcheck][ccheck] != 0 && boardcheck[rcheck][ccheck] != BLACKQUEEN && boardcheck[rcheck][ccheck] != BLACKROOK) {
         break;
       }
@@ -349,7 +349,7 @@ int ifattack(int boardcheck[8][8], int side, int r, int c) {
     if (rcheck >= 0 && boardcheck[rcheck][ccheck] == WHITEKING) {
       return 1;
     }
-    while (rcheck >= 8) {
+    while (rcheck >= 0) {
       if (boardcheck[rcheck][ccheck] != 0 && boardcheck[rcheck][ccheck] != WHITEQUEEN && boardcheck[rcheck][ccheck] != WHITEROOK) {
         break;
       }
@@ -525,6 +525,765 @@ int KingMovecheck(int boardcheck[8][8], int side, int moveable[8][8], int r, int
   }
   return 0;
 }
+void PawnMoveCheck(int boardcheck[8][8], int side, int moveable[8][8], int r, int c) {
+  int rcheck, ccheck;
+  if (side == 1) {
+    rcheck = r - 1;
+    ccheck = c;
+    if (boardcheck[rcheck][ccheck] == 0) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    if (r == 6 && movecheck[rcheck][ccheck] == 1 && boardcheck[rcheck - 1][ccheck] == 0) {
+      moveable[rcheck - 1][ccheck] = 1
+    }
+    if (ccheck < 7 && boardcheck[rcheck][ccheck + 1] >= 7) {
+      moveable[rcheck][ccheck + 1] = 1;
+    }
+    if (ccheck > 0 &&boardcheck[rcheck][ccheck - 1] >= 7) {
+      moveable[rcheck][ccheck - 1] = 1;
+    }
+  }
+  else {
+    rcheck = r + 1;
+    ccheck = c;
+    if (boardcheck[rcheck][ccheck] == 0) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    if (r == 1 && movecheck[rcheck][ccheck] == 1 && boardcheck[rcheck + 1][ccheck] == 0) {
+      moveable[rcheck + 1][ccheck] = 1
+    }
+    if (ccheck < 7 && boardcheck[rcheck][ccheck + 1] < 7) {
+      moveable[rcheck][ccheck + 1] = 1;
+    }
+    if (ccheck > 0 && boardcheck[rcheck][ccheck - 1] < 7) {
+      moveable[rcheck][ccheck - 1] = 1;
+    }
+  }
+}
+void RookMoveCheck(int boardcheck[8][8], int side, int moveable[8][8], int r, int c) {
+  int rcheck, ccheck;
+  if (side == 1) {
+    if (r < 7) {
+      rcheck = r + 1;
+      ccheck = c;
+      while (rcheck < 8) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        rcheck++;
+      }
+    }
+    if (r > 0) {
+      rcheck = r - 1;
+      ccheck = c;
+      while (rcheck >= 0) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          printf("gets out at [%d][%d]\n", rcheck, ccheck);
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        rcheck--;
+      }
+    }
+    if (c < 7) {
+      rcheck = r;
+      ccheck = c + 1;
+      while (ccheck < 8) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        ccheck++;
+      }
+    }
+    if (c > 0) {
+      rcheck = r;
+      ccheck = c - 1;
+      while (ccheck >= 0) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        ccheck--;
+      }
+    }
+  }
+  else {
+    if (r < 7) {
+      rcheck = r + 1;
+      ccheck = c;
+      while (rcheck < 8) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        rcheck++;
+      }
+    }
+    if (r > 0) {
+      rcheck = r - 1;
+      ccheck = c;
+      while (rcheck >= 0) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        rcheck--;
+      }
+    }
+    if (c < 7) {
+      rcheck = r;
+      ccheck = c + 1;
+      while (ccheck < 8) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        ccheck++;
+      }
+    }
+    if (c > 0) {
+      rcheck = r;
+      ccheck = c - 1;
+      while (ccheck >= 0) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        ccheck--;
+      }
+    }
+  }
+}
+void KnightMoveCheck(int boardcheck[8][8], int side, int moveable[8][8], int r, int c) {
+  int rcheck, ccheck;
+  if (side == 1) {
+    rcheck = r + 2;
+    ccheck = c + 1;
+    if (rcheck < 8 && ccheck < 8 && (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 2;
+    ccheck = c - 1;
+    if (rcheck < 8 && ccheck >= 0 && (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 2;
+    ccheck = c + 1;
+    if (rcheck >= 0 && ccheck < 8 && (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 2;
+    ccheck = c - 1;
+    if (rcheck >= 0 && ccheck >= 0 && (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c + 2;
+    if (rcheck < 8 && ccheck < 8 && (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c - 2;
+    if (rcheck < 8 && ccheck >= 0 && (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c + 2;
+    if (rcheck < 8 && ccheck >= 0 && (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c - 2;
+    if (rcheck >= 0 && ccheck >= 0 && (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+  }
+  else {
+    rcheck = r + 2;
+    ccheck = c + 1;
+    if (rcheck < 8 && ccheck < 8 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 2;
+    ccheck = c - 1;
+    if (rcheck < 8 && ccheck >= 0 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 2;
+    ccheck = c + 1;
+    if (rcheck >= 0 && ccheck < 8 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 2;
+    ccheck = c - 1;
+    if (rcheck >= 0 && ccheck >= 0 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c + 2;
+    if (rcheck < 8 && ccheck < 8 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r + 1;
+    ccheck = c - 2;
+    if (rcheck < 8 && ccheck >= 0 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c + 2;
+    if (rcheck < 8 && ccheck >= 0 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+    rcheck = r - 1;
+    ccheck = c - 2;
+    if (rcheck >= 0 && ccheck >= 0 && (boardcheck[rcheck][ccheck] < 7 || boardcheck[rcheck][ccheck] == 0)) {
+      moveable[rcheck][ccheck] = 1;
+    }
+  }
+}
+void BishopMoveCheck(int boardcheck[8][8], int side, int moveable[8][8], int r, int c) {
+  int rcheck, ccheck;
+  if (side == 1) {
+    rcheck = r + 1;
+    ccheck = c + 1;
+    while (rcheck < 8 && ccheck < 8) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+        printf("gets here\n");
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        break;
+      }
+      printf("gets here\n");
+      moveable[rcheck][ccheck] = 1;
+      rcheck++;
+      ccheck++;
+    }
+    rcheck = r + 1;
+    ccheck = c - 1;
+    while (rcheck < 8 && ccheck >= 0) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+        printf("gets here\n");
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        break;
+      }
+      printf("gets here\n");
+      moveable[rcheck][ccheck] = 1;
+      rcheck++;
+      ccheck--;
+    }
+    rcheck = r - 1;
+    ccheck = c + 1;
+    while (rcheck >= 0 && ccheck < 8) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+        printf("gets here\n");
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        break;
+      }
+      printf("gets here\n");
+      moveable[rcheck][ccheck] = 1;
+      rcheck--;
+      ccheck++;
+    }
+    rcheck = r - 1;
+    ccheck = c - 1;
+    while (rcheck >= 0 && ccheck >= 0) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+        printf("gets here\n");
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        break;
+      }
+      printf("gets here\n");
+      moveable[rcheck][ccheck] = 1;
+      rcheck--;
+      ccheck--;
+    }
+  }
+  else {
+    rcheck = r + 1;
+    ccheck = c + 1;
+    while (rcheck < 8 && ccheck < 8) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck++;
+      ccheck++;
+    }
+    rcheck = r + 1;
+    ccheck = c - 1;
+    while (rcheck < 8 && ccheck >= 0) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck++;
+      ccheck--;
+    }
+    rcheck = r - 1;
+    ccheck = c + 1;
+    while (rcheck >= 0 && ccheck < 8) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck--;
+      ccheck++;
+    }
+    rcheck = r - 1;
+    ccheck = c - 1;
+    while (rcheck >= 0 && ccheck >= 0) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck--;
+      ccheck--;
+    }
+  }
+}
+void QueenMoveCheck(int boardcheck[8][8], int side, int moveable[8][8], int r, int c) {
+  int rcheck, ccheck;
+  if (side == 1) {
+    rcheck = r + 1;
+    ccheck = c + 1;
+    while (rcheck < 8 && ccheck < 8) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck++;
+      ccheck++;
+    }
+    rcheck = r + 1;
+    ccheck = c - 1;
+    while (rcheck < 8 && ccheck >= 0) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck++;
+      ccheck--;
+    }
+    rcheck = r - 1;
+    ccheck = c + 1;
+    while (rcheck >= 0 && ccheck < 8) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck--;
+      ccheck++;
+    }
+    rcheck = r - 1;
+    ccheck = c - 1;
+    while (rcheck >= 0 && ccheck >= 0) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck--;
+      ccheck--;
+    }
+    if (r < 7) {
+      rcheck = r + 1;
+      ccheck = c;
+      while (rcheck < 8) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        rcheck++;
+      }
+    }
+    if (r > 0) {
+      rcheck = r - 1;
+      ccheck = c;
+      while (rcheck >= 0) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        rcheck--;
+      }
+    }
+    if (c < 7) {
+      rcheck = r;
+      ccheck = c + 1;
+      while (ccheck < 8) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        ccheck++;
+      }
+    }
+    if (c > 0) {
+      rcheck = r;
+      ccheck = c - 1;
+      while (ccheck >= 0) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7 || boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        ccheck--;
+      }
+    }
+  }
+  else {
+    rcheck = r + 1;
+    ccheck = c + 1;
+    while (rcheck < 8 && ccheck < 8) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck++;
+      ccheck++;
+    }
+    rcheck = r + 1;
+    ccheck = c - 1;
+    while (rcheck < 8 && ccheck >= 0) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck++;
+      ccheck--;
+    }
+    rcheck = r - 1;
+    ccheck = c + 1;
+    while (rcheck >= 0 && ccheck < 8) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck--;
+      ccheck++;
+    }
+    rcheck = r - 1;
+    ccheck = c - 1;
+    while (rcheck >= 0 && ccheck >= 0) {
+      if (boardcheck[rcheck][ccheck] == 0) {
+        moveable[rcheck][ccheck] = 1;
+      }
+      else if (boardcheck[rcheck][ccheck] < 7) {
+        moveable[rcheck][ccheck] = 1;
+        break;
+      }
+      else if (boardcheck[rcheck][ccheck] >= 7) {
+        break;
+      }
+      moveable[rcheck][ccheck] = 1;
+      rcheck--;
+      ccheck--;
+    }
+    if (r < 7) {
+      rcheck = r + 1;
+      ccheck = c;
+      while (rcheck < 8) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        rcheck++;
+      }
+    }
+    if (r > 0) {
+      rcheck = r - 1;
+      ccheck = c;
+      while (rcheck >= 0) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        rcheck--;
+      }
+    }
+    if (c < 7) {
+      rcheck = r;
+      ccheck = c + 1;
+      while (ccheck < 8) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        ccheck++;
+      }
+    }
+    if (c > 0) {
+      rcheck = r;
+      ccheck = c - 1;
+      while (ccheck >= 0) {
+        if (boardcheck[rcheck][ccheck] == 0) {
+          moveable[rcheck][ccheck] = 1;
+        }
+        else if (boardcheck[rcheck][ccheck] < 7) {
+          moveable[rcheck][ccheck] = 1;
+          break;
+        }
+        else if (boardcheck[rcheck][ccheck] >= 7) {
+          break;
+        }
+        moveable[rcheck][ccheck] = 1;
+        ccheck--;
+      }
+    }
+  }
+}
+void moves(int boardcheck[8][8], int side, int moveable[8][8], int r, int c) {
+  memset(moveable, 0, sizeof(int) * 64);
+  if (side == 1) {
+    switch (boardcheck[r][c]) {
+      case WHITEPAWN:
+        PawnMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case WHITEROOK:
+        RookMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case WHITEKNIGHT:
+        KnightMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case WHITEBISHOP:
+        BishopMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case WHITEQUEEN:
+        QueenMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case WHITEKING:
+        KingMovecheck(boardcheck, side, moveable, r, c);
+        break;
+    }
+  }
+  else {
+    switch (boardcheck[r][c]) {
+      case BLACKPAWN:
+        PawnMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case BLACKROOK:
+        RookMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case BLACKKNIGHT:
+        KnightMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case BLACKBISHOP:
+        BishopMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case BLACKQUEEN:
+        QueenMoveCheck(boardcheck, side, moveable, r, c);
+        break;
+      case BLACKKING:
+        KingMovecheck(boardcheck, side, moveable, r, c);
+        break;
+    }
+  }
+}
 int check(int boardcheck[8][8], int side) {
   int moveable[8][8];
   int r, c;
@@ -547,6 +1306,27 @@ int check(int boardcheck[8][8], int side) {
       return 1;
     }
     else if (!move && attacked) {
+      int r2, c2, r3, c3;
+      int boardcheck2[8][8];
+      copy(boardcheck2, boardcheck);
+      for (r2 = 0; r2 < 8; r2++) {
+        for (c2 = 0; c2 < 8; c2++) {
+          moves(boardcheck2, side, moveable, r2, c2);
+          for (r3 = 0; r3 < 8; r3++) {
+            for (c3 = 0; c3 < 8; c3++) {
+              if (moveable[r3][c3] == 1) {
+                printf("[%d][%d] moving to [%d][%d]\n", r2, c2, r3, c3);
+                boardcheck2[r3][c3] = boardcheck2[r2][c2];
+                boardcheck2[r2][c2] = 0;
+                if (!ifattack(boardcheck2, side, r, c)) {
+                  return 1;
+                }
+                copy(boardcheck2, boardcheck);
+              }
+            }
+          }
+        }
+      }
       return 2;
     }
     else {
@@ -554,7 +1334,6 @@ int check(int boardcheck[8][8], int side) {
     }
   }
   else {
-//    printf("boadcheck[7][4]: %d\n", boardcheck[7][4]);
     for (r = 0; r < 8; r++) {
       for (c = 0; c < 8; c++) {
         if (boardcheck[r][c] == BLACKKING) {
@@ -573,6 +1352,27 @@ int check(int boardcheck[8][8], int side) {
       return 1;
     }
     else if (!move && attacked) {
+      int r2, c2, r3, c3;
+      int boardcheck2[8][8];
+      copy(boardcheck2, boardcheck);
+      for (r2 = 0; r2 < 8; r2++) {
+        for (c2 = 0; c2 < 8; c2++) {
+          moves(boardcheck2, side, moveable, r2, c2);
+          for (r3 = 0; r3 < 8; r3++) {
+            for (c3 = 0; c3 < 8; c3++) {
+              if (moveable[r3][c3] == 1) {
+                boardcheck2[r3][c3] = boardcheck2[r2][c2];
+                boardcheck[r2][c2] = 0;
+                if (!ifattack(boardcheck2, side, r, c)) {
+                  printf("gets here: [%d][%d]\n", r2, c2);
+                  return 1;
+                }
+                copy(boardcheck2, boardcheck);
+              }
+            }
+          }
+        }
+      }
       return 2;
     }
     else {
@@ -778,6 +1578,11 @@ int main() {
                     copy(boardcheck, games[z].board);
                     boardcheck[cmove.r][cmove.c] = boardcheck[cmove.rcur][cmove.ccur];
                     boardcheck[cmove.rcur][cmove.ccur] = 0;
+                    if (cmove.check != 0) {
+                      valid = cmove.check;
+                      printf("valid: %d\n", valid);
+                      boardcheck[cmove.r][cmove.c] = valid;
+                    }
                     cmove.check = check(boardcheck, 1);
                     printf("cmove.check: %d\n", cmove.check);
                     if (cmove.check == 1 || cmove.check == 2) {
@@ -789,7 +1594,7 @@ int main() {
                     }
                     else if (check(boardcheck, 0) == 2) {
                       printf("white has checkmated black\n");
-                      cmove.check = 3;
+                      cmove.check = 7;
                       write(games[z].white, &valid, 4);
                       write(games[z].white, &cmove, sizeof(struct move));
                       cmove.check = 2;
@@ -799,11 +1604,12 @@ int main() {
                       cusers[games[z].white].logged = 1;
                     }
                     else if (cmove.check == 0) {
-                      games[z].board[cmove.r][cmove.c] = games[z].board[cmove.rcur][cmove.ccur];
+                      games[z].board[cmove.r][cmove.c] = boardcheck[cmove.r][cmove.c];
                       games[z].board[cmove.rcur][cmove.ccur] = 0;
                       printf("valid move done\n");
-                      valid = 1;
                       write(games[z].white, &valid, 4);
+                      if (valid != 1)
+                        cmove.check = valid;
                       write(games[z].black, &cmove, sizeof(struct move));
                     }
                   }
@@ -811,6 +1617,10 @@ int main() {
                     copy(boardcheck, games[z].board);
                     boardcheck[cmove.r][cmove.c] = boardcheck[cmove.rcur][cmove.ccur];
                     boardcheck[cmove.rcur][cmove.ccur] = 0;
+                    if (cmove.check != 0) {
+                      valid = cmove.check;
+                      boardcheck[cmove.r][cmove.c] = valid;
+                    }
                     cmove.check = check(boardcheck, 0);
                     printf("cmove.check: %d\n", cmove.check);
                     if (cmove.check == 1 || cmove.check == 2) {
@@ -822,7 +1632,7 @@ int main() {
                     }
                     else if (check(boardcheck, 1) == 2) {
                       printf("black has checkmated white\n");
-                      cmove.check = 3;
+                      cmove.check = 7;
                       write(games[z].black, &valid, 4);
                       write(games[z].black, &cmove, sizeof(struct move));
                       cmove.check = 2;
@@ -832,11 +1642,12 @@ int main() {
                       cusers[games[z].black].logged = 1;
                     }
                     else if (cmove.check == 0) {
-                      games[z].board[cmove.r][cmove.c] = games[z].board[cmove.rcur][cmove.ccur];
+                      games[z].board[cmove.r][cmove.c] = boardcheck[cmove.r][cmove.c];
                       games[z].board[cmove.rcur][cmove.ccur] = 0;
                       printf("valid move done\n");
-                      valid = 1;
                       write(games[z].black, &valid, 4);
+                      if (valid != 1)
+                        cmove.check = valid;
                       write(games[z].white, &cmove, sizeof(struct move));
                     }
                   }
